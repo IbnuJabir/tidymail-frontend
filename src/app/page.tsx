@@ -6,7 +6,9 @@ export default function Home() {
   return (
     <>
       <main>
-        <Dashboard />
+        <p className="text-2xl font-bold text-center">Home Page for TidyMail</p>
+        {/* add login button that links to login route */}
+        <a href="/login"><button>Login</button></a>
       </main>
       <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center"></footer>
     </>
