@@ -3,9 +3,8 @@ import type { FilterItemSchema } from "@/lib/parsers";
 import type { ColumnSort, Row, RowData } from "@tanstack/react-table";
 
 declare module "@tanstack/react-table" {
-  /* eslint-disable @typescript-eslint/no-unused-vars */
+  // biome-ignore lint/correctness/noUnusedVariables: <explanation>
   interface ColumnMeta<TData extends RowData, TValue> {
-    /* eslint-enable @typescript-eslint/no-unused-vars */
     label?: string;
     placeholder?: string;
     variant?: FilterVariant;
