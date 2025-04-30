@@ -1,6 +1,6 @@
 import type { ProductQueryParams, PaginatedProducts } from "@/types/product";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 export async function fetchProducts(
   params: ProductQueryParams
@@ -28,11 +28,12 @@ export async function fetchProducts(
   }
 
   const response = await fetch(
-    `${BASE_URL}/api/v1/products?${queryParams.toString()}`
+    `${BASE_URL}/api/v1/user/man/me`
   );
 
   if (!response.ok) {
     throw new Error("Failed to fetch products");
   }
+  console.log("User Data:", response);
   return response.json();
 }
