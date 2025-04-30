@@ -1,12 +1,12 @@
 "use client";
 
 import {
-  type Updater,
   type ColumnDef,
   type ColumnFiltersState,
+  type PaginationState,
+  type RowSelectionState,
   type SortingState,
   type VisibilityState,
-  type PaginationState,
   getCoreRowModel,
   getFacetedRowModel,
   getFacetedUniqueValues,
@@ -15,17 +15,15 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { parseAsInteger, parseAsString, useQueryState } from "nuqs";
 import * as React from "react";
 
 interface UseDataTableProps<TData, TValue> {
   data: TData[];
   columns: ColumnDef<TData, TValue>[];
   pageCount?: number;
-  manualPagination?: boolean;
-  manualSorting?: boolean;
-  onPaginationChange?: (page: number) => void;
-  onPageSizeChange?: (pageSize: number) => void;
-  onSortingChange?: (columnId: string, direction: "asc" | "desc") => void;
+  onPaginationChange?: (updater: PaginationState | ((state: PaginationState) => PaginationState)) => void;
+  onSortingChange?: (updater: SortingState | ((state: SortingState) => SortingState)) => void;
   initialState?: {
     pagination?: {
       pageIndex?: number;
@@ -33,7 +31,6 @@ interface UseDataTableProps<TData, TValue> {
     };
     sorting?: SortingState;
     columnVisibility?: VisibilityState;
-    columnFilters?: ColumnFiltersState;
     columnPinning?: {
       left?: string[];
       right?: string[];
@@ -45,109 +42,139 @@ interface UseDataTableProps<TData, TValue> {
 export function useDataTable<TData, TValue>({
   data,
   columns,
-  pageCount = -1,
-  manualPagination = false,
-  manualSorting = false,
+  pageCount,
   onPaginationChange,
-  onPageSizeChange,
   onSortingChange,
   initialState,
   getRowId,
 }: UseDataTableProps<TData, TValue>) {
-  const [rowSelection, setRowSelection] = React.useState({});
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>(initialState?.columnVisibility || {});
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    initialState?.columnFilters || []
+  // URL state management
+  const [page, setPage] = useQueryState(
+    "page",
+    parseAsInteger.withDefault(initialState?.pagination?.pageIndex ?? 0)
   );
-  const [sorting, setSorting] = React.useState<SortingState>(
-    initialState?.sorting || []
+  
+  const [pageSize, setPageSize] = useQueryState(
+    "limit",
+    parseAsInteger.withDefault(initialState?.pagination?.pageSize ?? 10)
+  );
+  
+  const [sortField, setSortField] = useQueryState(
+    "sort_by",
+    parseAsString.withDefault("")
+  );
+  
+  const [sortOrder, setSortOrder] = useQueryState(
+    "order",
+    parseAsString.withDefault("asc")
   );
 
-  // Handle pagination change
+  // Local state
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>(
+    initialState?.columnVisibility ?? {}
+  );
+  const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
+
+  // Convert URL parameters to table state
+  const pagination = React.useMemo(
+    () => ({
+      pageIndex: page,
+      pageSize: pageSize,
+    }),
+    [page, pageSize]
+  );
+
+  const sorting = React.useMemo(
+    () =>
+      sortField
+        ? [{ id: sortField, desc: sortOrder === "desc" }]
+        : ([] as SortingState),
+    [sortField, sortOrder]
+  );
+
+  // Handle pagination changes
   const handlePaginationChange = React.useCallback(
-    (updaterOrValue: Updater<PaginationState>) => {
-      if (manualPagination && onPaginationChange) {
-        // If it's a function, call it with the current state to get the new value
-        const newState =
-          typeof updaterOrValue === "function"
-            ? updaterOrValue(table.getState().pagination)
-            : updaterOrValue;
-
-        // Call the callback with the new page index + 1 (API uses 1-based indexing)
-        onPaginationChange(newState.pageIndex + 1);
-
-        // If page size changed and we have a handler for it
-        if (
-          onPageSizeChange &&
-          newState.pageSize !== table.getState().pagination.pageSize
-        ) {
-          onPageSizeChange(newState.pageSize);
-        }
+    (updater: PaginationState | ((state: PaginationState) => PaginationState)) => {
+      if (typeof updater === "function") {
+        const newPagination = updater(pagination);
+        setPage(newPagination.pageIndex);
+        setPageSize(newPagination.pageSize);
+        onPaginationChange?.(newPagination);
+      } else {
+        setPage(updater.pageIndex);
+        setPageSize(updater.pageSize);
+        onPaginationChange?.(updater);
       }
     },
-    [manualPagination, onPaginationChange, onPageSizeChange]
+    [pagination, setPage, setPageSize, onPaginationChange]
   );
 
-  // Handle sorting change
+  // Handle sorting changes
   const handleSortingChange = React.useCallback(
-    (updaterOrValue: Updater<SortingState>) => {
-      if (manualSorting && onSortingChange) {
-        // If it's a function, call it with the current state to get the new value
-        const newSorting =
-          typeof updaterOrValue === "function"
-            ? updaterOrValue(sorting)
-            : updaterOrValue;
-
+    (updater: SortingState | ((state: SortingState) => SortingState)) => {
+      if (typeof updater === "function") {
+        const newSorting = updater(sorting);
         if (newSorting.length > 0) {
-          const { id, desc } = newSorting[0];
-          onSortingChange(id, desc ? "desc" : "asc");
-        } else if (sorting.length > 0) {
-          // If sorting is being cleared, reset to default
-          onSortingChange("id", "asc");
+          setSortField(newSorting[0].id);
+          setSortOrder(newSorting[0].desc ? "desc" : "asc");
+        } else {
+          setSortField(null);
+          setSortOrder(null);
         }
+        onSortingChange?.(newSorting);
+      } else {
+        if (updater.length > 0) {
+          setSortField(updater[0].id);
+          setSortOrder(updater[0].desc ? "desc" : "asc");
+        } else {
+          setSortField(null);
+          setSortOrder(null);
+        }
+        onSortingChange?.(updater);
       }
-
-      // Update local state regardless
-      setSorting(updaterOrValue);
     },
-    [manualSorting, onSortingChange, sorting]
+    [sorting, setSortField, setSortOrder, onSortingChange]
   );
 
+  // Create table instance
   const table = useReactTable({
     data,
     columns,
-    pageCount: pageCount,
+    pageCount: pageCount ?? -1,
     state: {
+      pagination,
       sorting,
+      columnFilters,
       columnVisibility,
       rowSelection,
-      columnFilters,
-      pagination: {
-        pageIndex: initialState?.pagination?.pageIndex || 0,
-        pageSize: initialState?.pagination?.pageSize || 10,
-      },
     },
     enableRowSelection: true,
-    manualPagination,
-    manualSorting,
+    manualPagination: true,
+    manualSorting: true,
     onPaginationChange: handlePaginationChange,
     onSortingChange: handleSortingChange,
-    onRowSelectionChange: setRowSelection,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
+    onRowSelectionChange: setRowSelection,
     getCoreRowModel: getCoreRowModel(),
+    getFacetedRowModel: getFacetedRowModel(),
+    getFacetedUniqueValues: getFacetedUniqueValues(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getFacetedRowModel: getFacetedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
     getRowId,
     initialState: {
-      pagination: initialState?.pagination,
       columnPinning: initialState?.columnPinning,
     },
   });
 
-  return { table };
+  return {
+    table,
+    pagination,
+    sorting,
+    columnFilters,
+    columnVisibility,
+    rowSelection,
+  };
 }
