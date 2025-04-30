@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import Providers from "@/components/Providers";
+import type React from "react";
+import "@/app/globals.css";
+// import { ThemeProvider } from "@/components/theme-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,44 +18,22 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Mirtech Table - High-Performance Data Table App",
+  title: "TidyMail - Email Organization",
   description:
-    "Explore and manage large datasets with our fast, responsive data table. Built for performance, supporting 100,000+ records with instant filtering, sorting, and pagination.",
-  keywords: [
-    "data table",
-    "large datasets",
-    "FastAPI",
-    "Next.js",
-    "performance",
-    "filtering",
-    "sorting",
-    "pagination",
-    "responsive",
-  ],
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
-  },
+    "Clean up your inbox, manage subscriptions, and take control of your email",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <NuqsAdapter>{children}</NuqsAdapter>
+    <html lang="en" suppressHydrationWarning>
+      <body>
+        <Providers>
+          <NuqsAdapter>{children}</NuqsAdapter>
+        </Providers>
       </body>
     </html>
   );
