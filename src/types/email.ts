@@ -8,7 +8,6 @@ export interface Email {
   to: string;
   subject: string;
   date: string;
-  [key: string]: any; // For dynamic properties used in sorting
 
 }
 // export interface Email {

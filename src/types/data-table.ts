@@ -2,9 +2,23 @@ import type { DataTableConfig } from "@/config/data-table";
 import type { FilterItemSchema } from "@/lib/parsers";
 import type { ColumnSort, Row, RowData } from "@tanstack/react-table";
 
+// declare module "@tanstack/react-table" {
+//   // biome-ignore lint/correctness/noUnusedVariables: <explanation>
+//   interface ColumnMeta<TData extends RowData, TValue> {
+//     label?: string;
+//     placeholder?: string;
+//     variant?: FilterVariant;
+//     options?: Option[];
+//     range?: [number, number];
+//     unit?: string;
+//     icon?: React.FC<React.SVGProps<SVGSVGElement>>;
+//   }
+// }
+
 declare module "@tanstack/react-table" {
-  // biome-ignore lint/correctness/noUnusedVariables: <explanation>
+  /* eslint-disable @typescript-eslint/no-unused-vars */
   interface ColumnMeta<TData extends RowData, TValue> {
+    /* eslint-enable @typescript-eslint/no-unused-vars */
     label?: string;
     placeholder?: string;
     variant?: FilterVariant;
@@ -14,7 +28,6 @@ declare module "@tanstack/react-table" {
     icon?: React.FC<React.SVGProps<SVGSVGElement>>;
   }
 }
-
 export interface Option {
   label: string;
   value: string;
