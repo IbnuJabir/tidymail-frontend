@@ -1,6 +1,5 @@
 // lib/api.ts
-import axios, { AxiosResponse } from 'axios';
-import { ErrorResponse } from '@/types/auth';
+import axios from 'axios';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
