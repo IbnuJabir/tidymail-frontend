@@ -1,9 +1,9 @@
 "use client";
 
-import { DataTable } from "@/components/data-table";
-import { DataTableColumnHeader } from "@/components/data-table-column-header";
-import { DataTableToolbar } from "@/components/data-table-toolbar";
-import { DataTableSkeleton } from "@/components/data-table-skeleton";
+import { DataTable } from "@/components/data-table/data-table";
+import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
+import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
+import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
