@@ -1,5 +1,10 @@
 import api from "@/lib/api";
-import { Email, Subscription, SubscriptionResponse, GetSubscriptionsResponse } from "@/types/email";
+import {
+  Email,
+  Subscription,
+  SubscriptionResponse,
+  GetSubscriptionsResponse,
+} from "@/types/email";
 
 interface EmailResponse {
   status: string;
@@ -38,7 +43,9 @@ export async function analyseSubcription() {
   }
 }
 
-export async function getSubscriptions(queryParams?: string): Promise<GetSubscriptionsResponse> {
+export async function getSubscriptions(
+  queryParams?: string
+): Promise<GetSubscriptionsResponse> {
   try {
     let url = "/subscription/get-subscriptions?status=active";
 
@@ -65,7 +72,9 @@ export async function getSubscriptions(queryParams?: string): Promise<GetSubscri
   }
 }
 
-export async function getUnsubscribedEmails(queryParams?: string): Promise<GetSubscriptionsResponse> {
+export async function getUnsubscribedEmails(
+  queryParams?: string
+): Promise<GetSubscriptionsResponse> {
   try {
     let url = "/subscription/get-subscriptions?status=unsubscribed";
     if (queryParams) {
@@ -91,9 +100,17 @@ export async function getUnsubscribedEmails(queryParams?: string): Promise<GetSu
   }
 }
 
-export async function bulkTrash(email: string) {
+export async function bulkTrash(emails: string | string[]) {
   try {
-    const response = await api.post("/email/bulk-trash", { emails: [email] });
+    let response;
+    if (typeof emails === "string") {
+      response = await api.post("/email/bulk-trash", { emails: [emails] });
+    } else if (Array.isArray(emails) && emails.length > 0) {
+      response = await api.post("/email/bulk-trash", { emails });
+    } else {
+      throw new Error("No emails provided for bulk trash.");
+    }
+
     return response.data;
   } catch (error) {
     console.error("Error moving emails to trash:", error);
@@ -101,9 +118,18 @@ export async function bulkTrash(email: string) {
   }
 }
 
-export async function bulkDelete(email: string) {
+export async function bulkDelete(email: string | string[]) {
   try {
-    const response = await api.post("/email/bulk-delete", { emails: [email] });
+    let response;
+
+    if (typeof email === "string") {
+      response = await api.post("/email/bulk-delete", { emails: [email] });
+    } else if (Array.isArray(email) && email.length > 0) {
+      response = await api.post("/email/bulk-delete", { emails: email });
+    } else {
+      throw new Error("No emails provided for bulk delete.");
+    }
+
     return response.data;
   } catch (error) {
     console.error("Error deleting emails:", error);

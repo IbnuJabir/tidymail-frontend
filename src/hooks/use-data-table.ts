@@ -66,7 +66,7 @@ export function useDataTable<TData, TValue>({
   
   const [sortOrder, setSortOrder] = useQueryState(
     "order",
-    parseAsString.withDefault("asc")
+    parseAsString.withDefault("")
   );
 
   // Local state
