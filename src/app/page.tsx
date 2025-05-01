@@ -670,7 +670,7 @@ export default function HomePage() {
                 <p className="mt-2 text-muted-foreground">
                   TidyMail simplifies the unsubscribe process with our one-click
                   solution. When you choose to unsubscribe, our system handles
-                  the entire process securely in the background, so you don't
+                  the entire process securely in the background, so you don&apos;t
                   have to visit multiple websites or fill out forms. The service
                   complies with email marketing standards to ensure your
                   preferences are properly registered with senders.

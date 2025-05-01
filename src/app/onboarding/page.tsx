@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { analyseSubcription } from "@/services/email-service";
+import Image from "next/image";
 
 export default function OnboardingStart() {
   const router = useRouter();
@@ -12,12 +13,12 @@ export default function OnboardingStart() {
     <div className="flex flex-col items-center text-center">
       <h2 className="text-2xl font-bold mb-6">Welcome to TidyMail</h2>
       <p className="text-muted-foreground mb-8">
-        Let's get you set up with your email organization assistant. We'll walk
+        Let&apos;s get you set up with your email organization assistant. We&apos;ll walk
         you through the features and get your consent for the necessary
         permissions.
       </p>
       <div className="flex flex-col items-center gap-4">
-        <img
+        <Image
           src="/placeholder.svg?height=200&width=200"
           alt="TidyMail Logo"
           className="rounded-full bg-primary/10 p-4 mb-4"

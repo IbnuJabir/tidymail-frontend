@@ -26,7 +26,7 @@ export default function DisclaimerPage() {
 
         <ul className="list-disc pl-6 space-y-2">
           <li>TidyMail will analyze your emails to identify subscriptions and organize your inbox.</li>
-          <li>We only process the data necessary for the app's functionality.</li>
+          <li>We only process the data necessary for the app&apos;s functionality.</li>
           <li>Your email data is stored securely and not shared with third parties.</li>
           <li>You can request deletion of your data at any time.</li>
           <li>TidyMail is not responsible for any unintended consequences of unsubscribing from emails.</li>

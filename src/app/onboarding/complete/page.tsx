@@ -20,10 +20,10 @@ export default function CompletePage() {
         <CheckCircle className="h-12 w-12 text-primary" />
       </div>
 
-      <h2 className="text-2xl font-bold mb-4">You're All Set!</h2>
+      <h2 className="text-2xl font-bold mb-4">You&apos;re All Set!</h2>
 
       <p className="text-muted-foreground mb-8 max-w-md">
-        Thank you for completing the onboarding process. You're now ready to start using TidyMail to organize your
+        Thank you for completing the onboarding process. You&apos;re now ready to start using TidyMail to organize your
         emails and manage your subscriptions.
       </p>
 

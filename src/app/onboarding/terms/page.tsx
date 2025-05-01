@@ -25,7 +25,7 @@ export default function TermsPage() {
             more. We require access to your email data to provide these services.
           </p>
           <p>
-            You retain ownership of your data. We only process the data necessary for the app's functionality. You are
+            You retain ownership of your data. We only process the data necessary for the app&apos;s functionality. You are
             responsible for maintaining the confidentiality of your account information.
           </p>
           <p>We may update these terms from time to time. We will notify you of any significant changes.</p>
