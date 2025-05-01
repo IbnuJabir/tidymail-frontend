@@ -1,7 +1,6 @@
 import api from "@/lib/api";
 import {
   Email,
-  Subscription,
   SubscriptionResponse,
   GetSubscriptionsResponse,
 } from "@/types/email";

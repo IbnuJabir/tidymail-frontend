@@ -19,7 +19,7 @@ import { Clock, MoreHorizontal, Text, User, RefreshCw } from "lucide-react";
 import { parseAsArrayOf, parseAsString, useQueryState } from "nuqs";
 import * as React from "react";
 import { useQuery } from "@tanstack/react-query";
-import { analyseSubcription, fetchEmails } from "@/services/email-service";
+import { fetchEmails } from "@/services/email-service";
 import type { Email } from "@/types/email";
 
 export function EmailTable() {
@@ -50,6 +50,7 @@ export function EmailTable() {
         minute: "2-digit",
       });
     } catch (e) {
+      console.error("Error parsing date:", e);
       return timestamp;
     }
   }, []);

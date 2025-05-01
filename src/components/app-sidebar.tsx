@@ -3,11 +3,9 @@
 import * as React from "react";
 import {
   AudioWaveform,
-  Command,
-  GalleryVerticalEnd,
   UserX,
 } from "lucide-react";
-import { Mail, Home, UserRound } from "lucide-react";
+import { UserRound } from "lucide-react";
 import { NavUser } from "@/components/nav-user";
 import { TeamSwitcher } from "@/components/team-switcher";
 import {
@@ -20,7 +18,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import Link from "next/link";
+// import Link from "next/link";
 import { usePathname } from "next/navigation";
 // This is sample data.
 const data = {

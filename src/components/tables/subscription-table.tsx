@@ -24,7 +24,13 @@ import { useDataTable } from "@/hooks/use-data-table";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Loader2 } from "lucide-react";
 
-import type { Column, ColumnDef } from "@tanstack/react-table";
+import type {
+  Column,
+  ColumnDef,
+  SortingState,
+  PaginationState,
+  Updater,
+} from "@tanstack/react-table";
 import { Mail, MoreHorizontal, Search, Trash, Trash2, X } from "lucide-react";
 import { parseAsInteger, parseAsString, useQueryState } from "nuqs";
 import * as React from "react";
@@ -53,11 +59,11 @@ export function SubscriptionTable() {
   );
   const [sortField, setSortField] = useQueryState(
     "sort_by",
-    parseAsString.withDefault("name")
+    parseAsString.withDefault("")
   );
   const [sortOrder, setSortOrder] = useQueryState(
     "order",
-    parseAsString.withDefault("asc")
+    parseAsString.withDefault("")
   );
 
   const isMobile = useMediaQuery("(max-width: 640px)");
@@ -85,7 +91,12 @@ export function SubscriptionTable() {
 
   // Handle sorting changes from the table
   const handleSortingChange = React.useCallback(
-    async (newSorting: any) => {
+    async (updater: Updater<SortingState>) => {
+      const currentSorting: SortingState = sortingState;
+
+      const newSorting =
+        typeof updater === "function" ? updater(currentSorting) : updater;
+
       if (newSorting.length > 0) {
         await setSortField(newSorting[0].id);
         await setSortOrder(newSorting[0].desc ? "desc" : "asc");
@@ -94,7 +105,7 @@ export function SubscriptionTable() {
         await setSortOrder(null);
       }
     },
-    [setSortField, setSortOrder]
+    [sortingState, setSortField, setSortOrder]
   );
 
   // Mutations
@@ -113,7 +124,7 @@ export function SubscriptionTable() {
       setConfirmDialog((prev) => ({ ...prev, isOpen: false }));
     },
   });
-  
+
   const bulkDeleteMutation = useMutation({
     mutationFn: (emails: string | string[]) => bulkDelete(emails),
     onSuccess: () => {
@@ -180,60 +191,49 @@ export function SubscriptionTable() {
     await setPage(1);
   }, [setSearch, setPage]);
 
-  // Pagination change handler
   const handlePaginationChange = React.useCallback(
-    async (updater: any) => {
-      if (typeof updater === "function") {
-        const newPagination = updater({
-          pageIndex: (page || 1) - 1,
-          pageSize: pageSize || 10,
-        });
-        await setPage(newPagination.pageIndex + 1);
-        await setPageSize(newPagination.pageSize);
-      } else {
-        await setPage(updater.pageIndex + 1);
-        await setPageSize(updater.pageSize);
-      }
+    async (updater: Updater<PaginationState>) => {
+      const currentPagination: PaginationState = {
+        pageIndex: (page || 1) - 1,
+        pageSize: pageSize || 10,
+      };
+
+      const newPagination =
+        typeof updater === "function" ? updater(currentPagination) : updater;
+
+      await setPage(newPagination.pageIndex + 1);
+      await setPageSize(newPagination.pageSize);
     },
     [page, pageSize, setPage, setPageSize]
   );
 
   // Action handlers
-  const handleUnsubscribe = React.useCallback(
-    (subscription: Subscription) => {
-      setConfirmDialog({
-        isOpen: true,
-        title: "Unsubscribe",
-        description: `Are you sure you want to unsubscribe from ${subscription.name} (${subscription.email})?`,
-        action: () => unsubscribeMutation.mutate(subscription.email),
-      });
-    },
-    []
-  );
+  const handleUnsubscribe = React.useCallback((subscription: Subscription) => {
+    setConfirmDialog({
+      isOpen: true,
+      title: "Unsubscribe",
+      description: `Are you sure you want to unsubscribe from ${subscription.name} (${subscription.email})?`,
+      action: () => unsubscribeMutation.mutate(subscription.email),
+    });
+  }, []);
 
-  const handleBulkTrash = React.useCallback(
-    (subscription: Subscription) => {
-      setConfirmDialog({
-        isOpen: true,
-        title: "Move to Trash",
-        description: `Are you sure you want to move all messages from ${subscription.name} (${subscription.email}) to trash?`,
-        action: () => bulkTrashMutation.mutate(subscription.email),
-      });
-    },
-    []
-  );
+  const handleBulkTrash = React.useCallback((subscription: Subscription) => {
+    setConfirmDialog({
+      isOpen: true,
+      title: "Move to Trash",
+      description: `Are you sure you want to move all messages from ${subscription.name} (${subscription.email}) to trash?`,
+      action: () => bulkTrashMutation.mutate(subscription.email),
+    });
+  }, []);
 
-  const handleBulkDelete = React.useCallback(
-    (subscription: Subscription) => {
-      setConfirmDialog({
-        isOpen: true,
-        title: "Permanently Delete",
-        description: `Are you sure you want to permanently delete all messages from ${subscription.name} (${subscription.email})? This action cannot be undone.`,
-        action: () => bulkDeleteMutation.mutate(subscription.email),
-      });
-    },
-    []
-  );
+  const handleBulkDelete = React.useCallback((subscription: Subscription) => {
+    setConfirmDialog({
+      isOpen: true,
+      title: "Permanently Delete",
+      description: `Are you sure you want to permanently delete all messages from ${subscription.name} (${subscription.email})? This action cannot be undone.`,
+      action: () => bulkDeleteMutation.mutate(subscription.email),
+    });
+  }, []);
 
   const handleBulkRowTrash = React.useCallback(
     (selectedRows: Subscription[]) => {
@@ -360,9 +360,15 @@ export function SubscriptionTable() {
       {
         id: "actions",
         cell: function Cell({ row }) {
-          const isUnsubscribing = unsubscribeMutation.isPending && unsubscribeMutation.variables === row.original.email;
-          const isTrashingRow = bulkTrashMutation.isPending && bulkTrashMutation.variables === row.original.email;
-          const isDeletingRow = bulkDeleteMutation.isPending && bulkDeleteMutation.variables === row.original.email;
+          const isUnsubscribing =
+            unsubscribeMutation.isPending &&
+            unsubscribeMutation.variables === row.original.email;
+          const isTrashingRow =
+            bulkTrashMutation.isPending &&
+            bulkTrashMutation.variables === row.original.email;
+          const isDeletingRow =
+            bulkDeleteMutation.isPending &&
+            bulkDeleteMutation.variables === row.original.email;
           const isLoading = isUnsubscribing || isTrashingRow || isDeletingRow;
 
           return (
@@ -471,15 +477,21 @@ export function SubscriptionTable() {
           Error loading subscriptions:{" "}
           {error instanceof Error ? error.message : "Unknown error"}
         </div>
-        <Button onClick={() => queryClient.invalidateQueries({ queryKey: ["subscriptions"] })}>
+        <Button
+          onClick={() =>
+            queryClient.invalidateQueries({ queryKey: ["subscriptions"] })
+          }
+        >
           Retry
         </Button>
       </div>
     );
   }
 
-  const isBulkTrashLoading = bulkTrashMutation.isPending && Array.isArray(bulkTrashMutation.variables);
-  const isBulkDeleteLoading = bulkDeleteMutation.isPending && Array.isArray(bulkDeleteMutation.variables);
+  const isBulkTrashLoading =
+    bulkTrashMutation.isPending && Array.isArray(bulkTrashMutation.variables);
+  const isBulkDeleteLoading =
+    bulkDeleteMutation.isPending && Array.isArray(bulkDeleteMutation.variables);
 
   return (
     <div className="data-table-container">

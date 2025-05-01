@@ -23,7 +23,13 @@ import { Input } from "@/components/ui/input";
 import { useDataTable } from "@/hooks/use-data-table";
 import { useMediaQuery } from "@/hooks/use-media-query";
 
-import type { Column, ColumnDef } from "@tanstack/react-table";
+import type {
+  Column,
+  ColumnDef,
+  PaginationState,
+  Updater,
+  SortingState,
+} from "@tanstack/react-table";
 import {
   Loader2,
   Mail,
@@ -91,7 +97,12 @@ export function UnsubscribedTable() {
 
   // Handle sorting changes from the table
   const handleSortingChange = React.useCallback(
-    async (newSorting: any) => {
+    async (updater: Updater<SortingState>) => {
+      const currentSorting: SortingState = sortingState;
+
+      const newSorting =
+        typeof updater === "function" ? updater(currentSorting) : updater;
+
       if (newSorting.length > 0) {
         await setSortField(newSorting[0].id);
         await setSortOrder(newSorting[0].desc ? "desc" : "asc");
@@ -100,7 +111,7 @@ export function UnsubscribedTable() {
         await setSortOrder(null);
       }
     },
-    [setSortField, setSortOrder]
+    [sortingState, setSortField, setSortOrder]
   );
 
   // Mutations
@@ -194,20 +205,18 @@ export function UnsubscribedTable() {
     await setPage(1);
   }, [setSearch, setPage]);
 
-  // Pagination change handler
   const handlePaginationChange = React.useCallback(
-    async (updater: any) => {
-      if (typeof updater === "function") {
-        const newPagination = updater({
-          pageIndex: (page || 1) - 1,
-          pageSize: pageSize || 10,
-        });
-        await setPage(newPagination.pageIndex + 1);
-        await setPageSize(newPagination.pageSize);
-      } else {
-        await setPage(updater.pageIndex + 1);
-        await setPageSize(updater.pageSize);
-      }
+    async (updater: Updater<PaginationState>) => {
+      const currentPagination: PaginationState = {
+        pageIndex: (page || 1) - 1,
+        pageSize: pageSize || 10,
+      };
+
+      const newPagination =
+        typeof updater === "function" ? updater(currentPagination) : updater;
+
+      await setPage(newPagination.pageIndex + 1);
+      await setPageSize(newPagination.pageSize);
     },
     [page, pageSize, setPage, setPageSize]
   );

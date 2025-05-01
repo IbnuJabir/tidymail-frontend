@@ -2,22 +2,9 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 export function LoginForm({
-  className,
-  ...props
+  className
 }: React.ComponentProps<"form">) {
-  async function Login() {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/login`
-      );
 
-      const data = await response.json();
-
-      console.log(data);
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  }
   const handleGoogleLogin = () => {
     // Redirect to backend Google OAuth endpoint
     window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/login`;
