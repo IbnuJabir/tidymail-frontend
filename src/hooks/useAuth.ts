@@ -14,7 +14,7 @@ export function useUser() {
         const { data } = await api.get<AuthResponse>('/user/me');
         return data.data as User;
       } catch (error) {
-        throw new Error('Failed to fetch user');
+        throw new Error(`Failed to fetch user: ${error}`);
       }
     },
     retry: 1,
