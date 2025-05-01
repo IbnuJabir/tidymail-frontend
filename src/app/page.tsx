@@ -18,6 +18,8 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useUser } from "@/hooks/useAuth";
+import Image from "next/image";
+import dashboardImage from "@/assets/dashboard.png"
 
 export default function HomePage() {
   const { data: user } = useUser();
@@ -104,8 +106,8 @@ export default function HomePage() {
             </div>
             <div className="mt-16 w-full max-w-5xl overflow-hidden rounded-xl border bg-background shadow-xl">
               <div className="relative aspect-[16/9] overflow-hidden bg-muted">
-                <img
-                  src="/placeholder.svg?height=720&width=1280"
+                <Image
+                  src={dashboardImage}
                   alt="TidyMail Dashboard"
                   className="h-full w-full object-cover"
                   width={1280}
@@ -124,21 +126,21 @@ export default function HomePage() {
         {/* Stats Section */}
         <section className="border-y bg-muted/30 py-12">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
-            <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
-              <div className="flex flex-col items-center justify-center">
+            <div className="grid grid-cols-1 gap-10 md:grid-cols-3">
+              {/* <div className="flex flex-col items-center justify-center">
                 <p className="text-3xl font-bold md:text-4xl">10k+</p>
                 <p className="text-center text-sm text-muted-foreground">
                   Active Users
                 </p>
-              </div>
+              </div> */}
               <div className="flex flex-col items-center justify-center">
-                <p className="text-3xl font-bold md:text-4xl">2M+</p>
+                <p className="text-3xl font-bold md:text-4xl">20k+</p>
                 <p className="text-center text-sm text-muted-foreground">
                   Emails Processed
                 </p>
               </div>
               <div className="flex flex-col items-center justify-center">
-                <p className="text-3xl font-bold md:text-4xl">500k+</p>
+                <p className="text-3xl font-bold md:text-4xl">5k+</p>
                 <p className="text-center text-sm text-muted-foreground">
                   Subscriptions Managed
                 </p>
@@ -297,8 +299,7 @@ export default function HomePage() {
                             <div>
                               <p className="font-medium">Create an account</p>
                               <p className="text-sm text-muted-foreground">
-                                Sign up for TidyMail with your email and
-                                password
+                                Sign up for TidyMail with your google account
                               </p>
                             </div>
                           </li>
@@ -319,9 +320,10 @@ export default function HomePage() {
                               3
                             </div>
                             <div>
-                              <p className="font-medium">Set preferences</p>
+                              <p className="font-medium">Start onboarding</p>
                               <p className="text-sm text-muted-foreground">
-                                Choose which features you want to enable
+                                After connecting, you’ll be guided through
+                                onboarding to customize your experience.
                               </p>
                             </div>
                           </li>
@@ -329,7 +331,7 @@ export default function HomePage() {
                       </div>
                       <div className="bg-muted p-6">
                         <div className="overflow-hidden rounded-lg border bg-background shadow-sm">
-                          <img
+                          <Image
                             src="/placeholder.svg?height=400&width=600"
                             alt="Connect your email"
                             className="h-full w-full object-cover"
@@ -367,9 +369,12 @@ export default function HomePage() {
                               2
                             </div>
                             <div>
-                              <p className="font-medium">Categorization</p>
+                              <p className="font-medium">
+                                Subscription tracking
+                              </p>
                               <p className="text-sm text-muted-foreground">
-                                Emails are organized into meaningful categories
+                                View all your subscriptions in one convenient
+                                dashboard
                               </p>
                             </div>
                           </li>
@@ -378,10 +383,11 @@ export default function HomePage() {
                               3
                             </div>
                             <div>
-                              <p className="font-medium">Insights generation</p>
+                              <p className="font-medium">
+                                One-click unsubscribe
+                              </p>
                               <p className="text-sm text-muted-foreground">
-                                Get personalized insights about your email
-                                habits
+                                Easily manage and remove unwanted subscriptions
                               </p>
                             </div>
                           </li>
@@ -389,7 +395,7 @@ export default function HomePage() {
                       </div>
                       <div className="bg-muted p-6">
                         <div className="overflow-hidden rounded-lg border bg-background shadow-sm">
-                          <img
+                          <Image
                             src="/placeholder.svg?height=400&width=600"
                             alt="Analyze your inbox"
                             className="h-full w-full object-cover"
@@ -439,9 +445,10 @@ export default function HomePage() {
                               3
                             </div>
                             <div>
-                              <p className="font-medium">Ongoing maintenance</p>
+                              <p className="font-medium">Activity history</p>
                               <p className="text-sm text-muted-foreground">
-                                Keep your inbox clean with automated suggestions
+                                Track all your unsubscribe and management
+                                actions
                               </p>
                             </div>
                           </li>
@@ -484,10 +491,12 @@ export default function HomePage() {
                 <CardHeader>
                   <div className="flex items-center gap-4">
                     <div className="h-10 w-10 overflow-hidden rounded-full bg-muted">
-                      <img
+                      <Image
                         src="/placeholder.svg?height=40&width=40"
                         alt="User avatar"
                         className="h-full w-full object-cover"
+                        width={40}
+                        height={40}
                       />
                     </div>
                     <div>
@@ -503,10 +512,10 @@ export default function HomePage() {
                     ))}
                   </div>
                   <p className="text-muted-foreground">
-                    "TidyMail has completely transformed how I manage my inbox.
-                    I was drowning in promotional emails, and now I'm back in
-                    control. The subscription management feature is a
-                    game-changer!"
+                    &ldquo;TidyMail has completely transformed how I manage my
+                    inbox. I was drowning in promotional emails, and now
+                    I&apos;m back in control. The subscription management
+                    feature is a game-changer!&rdquo;
                   </p>
                 </CardContent>
               </Card>
@@ -515,10 +524,12 @@ export default function HomePage() {
                 <CardHeader>
                   <div className="flex items-center gap-4">
                     <div className="h-10 w-10 overflow-hidden rounded-full bg-muted">
-                      <img
+                      <Image
                         src="/placeholder.svg?height=40&width=40"
                         alt="User avatar"
                         className="h-full w-full object-cover"
+                        width={40}
+                        height={40}
                       />
                     </div>
                     <div>
@@ -534,10 +545,10 @@ export default function HomePage() {
                     ))}
                   </div>
                   <p className="text-muted-foreground">
-                    "As someone who gets hundreds of emails daily, TidyMail has
-                    been a lifesaver. The bulk actions and smart categorization
-                    help me stay organized without spending hours managing my
-                    inbox."
+                    &ldquo;As someone who gets hundreds of emails daily,
+                    TidyMail has been a lifesaver. The bulk actions and smart
+                    categorization help me stay organized without spending hours
+                    managing my inbox.&rdquo;
                   </p>
                 </CardContent>
               </Card>
@@ -546,10 +557,12 @@ export default function HomePage() {
                 <CardHeader>
                   <div className="flex items-center gap-4">
                     <div className="h-10 w-10 overflow-hidden rounded-full bg-muted">
-                      <img
+                      <Image
                         src="/placeholder.svg?height=40&width=40"
                         alt="User avatar"
                         className="h-full w-full object-cover"
+                        width={40}
+                        height={40}
                       />
                     </div>
                     <div>
@@ -567,10 +580,10 @@ export default function HomePage() {
                     ))}
                   </div>
                   <p className="text-muted-foreground">
-                    "I was skeptical at first, but TidyMail exceeded my
-                    expectations. It's intuitive, powerful, and has saved me so
-                    much time. I can finally focus on emails that matter for my
-                    business."
+                    &ldquo;I was skeptical at first, but TidyMail exceeded my
+                    expectations. It&apos;s intuitive, powerful, and has saved
+                    me so much time. I can finally focus on emails that matter
+                    for my business.&rdquo;
                   </p>
                 </CardContent>
               </Card>
@@ -636,9 +649,8 @@ export default function HomePage() {
                   Which email providers are supported?
                 </h3>
                 <p className="mt-2 text-muted-foreground">
-                  TidyMail currently supports Gmail, Outlook, Yahoo Mail, and
-                  most IMAP email providers. We're constantly adding support for
-                  more providers.
+                  TidyMail currently supports Gmail. We&apos;re constantly
+                  adding support for more providers.
                 </p>
               </div>
               <div>
@@ -647,7 +659,7 @@ export default function HomePage() {
                 </h3>
                 <p className="mt-2 text-muted-foreground">
                   Yes, TidyMail is fully responsive and works on all devices,
-                  including smartphones and tablets. We're also working on
+                  including smartphones and tablets. We&apos;re also working on
                   dedicated mobile apps.
                 </p>
               </div>
@@ -656,9 +668,12 @@ export default function HomePage() {
                   How does unsubscribing work?
                 </h3>
                 <p className="mt-2 text-muted-foreground">
-                  TidyMail uses the official unsubscribe methods provided by
-                  email senders. We follow the unsubscribe links or send
-                  unsubscribe requests on your behalf.
+                  TidyMail simplifies the unsubscribe process with our one-click
+                  solution. When you choose to unsubscribe, our system handles
+                  the entire process securely in the background, so you don't
+                  have to visit multiple websites or fill out forms. The service
+                  complies with email marketing standards to ensure your
+                  preferences are properly registered with senders.
                 </p>
               </div>
               <div>
@@ -676,8 +691,8 @@ export default function HomePage() {
                 </h3>
                 <p className="mt-2 text-muted-foreground">
                   Emails moved to trash can be recovered within your email
-                  provider's trash retention period. Permanently deleted emails
-                  cannot be recovered.
+                  provider&apos;s trash retention period. Permanently deleted
+                  emails cannot be recovered.
                 </p>
               </div>
             </div>
