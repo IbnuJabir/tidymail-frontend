@@ -111,7 +111,7 @@ export default function HomePage() {
                   alt="TidyMail Dashboard"
                   className="h-full w-full object-cover"
                   width={1280}
-                  height={720}
+                  height={680}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
               </div>
