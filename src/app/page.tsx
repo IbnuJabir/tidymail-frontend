@@ -612,7 +612,7 @@ export default function HomePage() {
                   <Button
                     size="lg"
                     variant="outline"
-                    className="bg-transparent text-primary-foreground border-primary-foreground hover:bg-primary-foreground/10"
+                    className="bg-transparent text-primary-foreground border-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
                   >
                     Login
                   </Button>
