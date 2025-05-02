@@ -19,7 +19,8 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useUser } from "@/hooks/useAuth";
 import Image from "next/image";
-import dashboardImage from "@/assets/dashboard.png"
+import dashboardImage from "@/assets/dashboard.png";
+import FaqAccordion from "@/components/FaqAccordion";
 
 export default function HomePage() {
   const { data: user } = useUser();
@@ -635,67 +636,7 @@ export default function HomePage() {
               </p>
             </div>
 
-            <div className="mt-16 grid gap-8 md:grid-cols-2">
-              <div>
-                <h3 className="text-lg font-semibold">Is TidyMail secure?</h3>
-                <p className="mt-2 text-muted-foreground">
-                  Yes, security is our top priority. We use industry-standard
-                  encryption and never store your email passwords. We only
-                  access the data necessary to provide our services.
-                </p>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold">
-                  Which email providers are supported?
-                </h3>
-                <p className="mt-2 text-muted-foreground">
-                  TidyMail currently supports Gmail. We&apos;re constantly
-                  adding support for more providers.
-                </p>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold">
-                  Can I use TidyMail on mobile?
-                </h3>
-                <p className="mt-2 text-muted-foreground">
-                  Yes, TidyMail is fully responsive and works on all devices,
-                  including smartphones and tablets. We&apos;re also working on
-                  dedicated mobile apps.
-                </p>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold">
-                  How does unsubscribing work?
-                </h3>
-                <p className="mt-2 text-muted-foreground">
-                  TidyMail simplifies the unsubscribe process with our one-click
-                  solution. When you choose to unsubscribe, our system handles
-                  the entire process securely in the background, so you don&apos;t
-                  have to visit multiple websites or fill out forms. The service
-                  complies with email marketing standards to ensure your
-                  preferences are properly registered with senders.
-                </p>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold">
-                  Is there a limit to how many emails I can manage?
-                </h3>
-                <p className="mt-2 text-muted-foreground">
-                  Our free plan allows you to manage up to 1,000 emails and 50
-                  subscriptions. Premium plans offer unlimited email management.
-                </p>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold">
-                  Can I recover deleted emails?
-                </h3>
-                <p className="mt-2 text-muted-foreground">
-                  Emails moved to trash can be recovered within your email
-                  provider&apos;s trash retention period. Permanently deleted
-                  emails cannot be recovered.
-                </p>
-              </div>
-            </div>
+            <FaqAccordion />
           </div>
         </section>
       </main>
