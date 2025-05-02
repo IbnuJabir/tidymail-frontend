@@ -1,19 +1,9 @@
-import { useIsMobile } from "@/hooks/use-mobile";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-
-interface FaqItem {
-  question: string;
-  answer: string;
-}
-
-interface FaqAccordionProps {
-  faqs: FaqItem[];
-}
 
 // FAQ data
 const faqs = [
