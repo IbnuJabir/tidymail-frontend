@@ -18,16 +18,16 @@ export async function middleware(req: NextRequest) {
   // Check if the user is authenticated
   const isAuthenticated = !!authToken
   
-  console.log({
-    path,
-    isProtectedRoute,
-    isAuthenticated,
-    authToken: !!authToken
-  })
+  // console.log({
+  //   path,
+  //   isProtectedRoute,
+  //   isAuthenticated,
+  //   authToken: !!authToken
+  // })
 
   // If the route is protected and the user is not authenticated, redirect to login
   if (isProtectedRoute && !isAuthenticated) {
-    console.log('failed Redirecting to login')
+    // console.log('failed Redirecting to login')
     return NextResponse.redirect(new URL('/login', req.nextUrl))
   }
   
