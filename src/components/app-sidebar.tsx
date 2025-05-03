@@ -18,8 +18,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+// import Link from "next/link";
 import { usePathname } from "next/navigation";
-import Link from "next/link";
 
 const data = {
   teams: [
@@ -68,10 +68,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 isActive={pathname === route.href}
                 tooltip={route.title}
               >
-                <Link href={route.href}>
+                <a href={route.href}>
                   <route.icon />
                   <span>{route.title}</span>
-                </Link>
+                </a>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
