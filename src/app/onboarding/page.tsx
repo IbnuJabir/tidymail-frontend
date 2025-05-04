@@ -3,10 +3,10 @@
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-// import { analyseSubcription } from "@/services/email-service"; // Assuming this service exists
+// import { analyseSubcription } from "@/services/email-service";
 import Image from "next/image";
-import { motion } from "framer-motion"; // Added for animations
-
+import { motion } from "framer-motion";
+import welcomeOnboarding from "@/assets/welcomeonboard.png";
 export default function OnboardingStart() {
   const router = useRouter();
 
@@ -20,19 +20,22 @@ export default function OnboardingStart() {
     >
       <h2 className="text-2xl font-bold mb-6">Welcome to TidyMail</h2>
       <p className="text-muted-foreground mb-8">
-        Let&apos;s get you set up with your email organization assistant. We&apos;ll walk
-        you through the features and get your consent for the necessary
-        permissions.
+        Let&apos;s get you set up with your email organization assistant.
+        We&apos;ll walk you through the features and get your consent for the
+        necessary permissions.
       </p>
       <div className="flex flex-col items-center gap-4">
         {/* Added a subtle animation to the image */}
-        <motion.div whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 300 }}>
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          transition={{ type: "spring", stiffness: 300 }}
+        >
           <Image
-            src="/placeholder.svg?height=200&width=200" // Replace with actual logo path if available
+            src={welcomeOnboarding}
             alt="TidyMail Logo"
             className="rounded-full bg-primary/10 p-4 mb-4 shadow-md"
-            width={200}
-            height={200}
+            width={250}
+            height={250}
           />
         </motion.div>
         <p className="text-lg font-medium">Your personal email assistant</p>
@@ -55,4 +58,3 @@ export default function OnboardingStart() {
     </motion.div>
   );
 }
-

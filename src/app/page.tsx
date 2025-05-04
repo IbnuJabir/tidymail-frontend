@@ -3,6 +3,8 @@ import Link from "next/link";
 import {
   ArrowRight,
   CheckCircle,
+  CheckCircle2,
+  Laptop2,
   Mail,
   Sparkles,
   Trash,
@@ -21,7 +23,9 @@ import { useUser } from "@/hooks/useAuth";
 import Image from "next/image";
 import dashboardImage from "@/assets/dashboard.png";
 import FaqAccordion from "@/components/FaqAccordion";
-
+import connectGmail from "@/assets/connectGmail.png";
+import analyzeEmail from "@/assets/analyzeEmail.png";
+import manageEmail from "@/assets/manageEmail.png";
 export default function HomePage() {
   const { data: user } = useUser();
   return (
@@ -261,7 +265,10 @@ export default function HomePage() {
         </section>
 
         {/* How It Works Section */}
-        <section id="how-it-works" className="bg-muted/30 py-20">
+        <section
+          id="how-it-works"
+          className="bg-muted/30 py-12 sm:py-16 md:py-20"
+        >
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
             <div className="mx-auto max-w-2xl text-center">
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
@@ -273,7 +280,7 @@ export default function HomePage() {
               </p>
             </div>
 
-            <div className="mt-16">
+            <div className="mt-12 md:mt-16">
               <Tabs defaultValue="connect" className="w-full">
                 <TabsList className="grid w-full grid-cols-3">
                   <TabsTrigger value="connect">1. Connect</TabsTrigger>
@@ -282,9 +289,9 @@ export default function HomePage() {
                 </TabsList>
                 <div className="mt-8 overflow-hidden rounded-xl border bg-background">
                   <TabsContent value="connect" className="p-0">
-                    <div className="grid md:grid-cols-2">
-                      <div className="flex flex-col justify-center p-8">
-                        <h3 className="text-2xl font-bold">
+                    <div className="grid grid-cols-1 md:grid-cols-2">
+                      <div className="flex flex-col justify-center p-6 sm:p-8">
+                        <h3 className="text-xl sm:text-2xl font-bold">
                           Connect Your Email
                         </h3>
                         <p className="mt-2 text-muted-foreground">
@@ -323,30 +330,28 @@ export default function HomePage() {
                             <div>
                               <p className="font-medium">Start onboarding</p>
                               <p className="text-sm text-muted-foreground">
-                                After connecting, you’ll be guided through
+                                After connecting, you&apos;ll be guided through
                                 onboarding to customize your experience.
                               </p>
                             </div>
                           </li>
                         </ul>
                       </div>
-                      <div className="bg-muted p-6">
-                        <div className="overflow-hidden rounded-lg border bg-background shadow-sm">
-                          <Image
-                            src="/placeholder.svg?height=400&width=600"
-                            alt="Connect your email"
-                            className="h-full w-full object-cover"
-                            width={600}
-                            height={400}
-                          />
-                        </div>
+                      <div className="hidden h-full md:block bg-muted p-4 sm:p-4 relative aspect-video w-full overflow-hidden border shadow-sm">
+                        <Image
+                          src={connectGmail || "/placeholder.svg"}
+                          alt="Connect your email"
+                          className="h-full w-full object-fill rounded-lg border"
+                          width={400}
+                          height={300}
+                        />
                       </div>
                     </div>
                   </TabsContent>
                   <TabsContent value="analyze" className="p-0">
-                    <div className="grid md:grid-cols-2">
-                      <div className="flex flex-col justify-center p-8">
-                        <h3 className="text-2xl font-bold">
+                    <div className="grid grid-cols-1 md:grid-cols-2">
+                      <div className="flex flex-col justify-center p-6 sm:p-8">
+                        <h3 className="text-xl sm:text-2xl font-bold">
                           Analyze Your Inbox
                         </h3>
                         <p className="mt-2 text-muted-foreground">
@@ -394,23 +399,21 @@ export default function HomePage() {
                           </li>
                         </ul>
                       </div>
-                      <div className="bg-muted p-6">
-                        <div className="overflow-hidden rounded-lg border bg-background shadow-sm">
-                          <Image
-                            src="/placeholder.svg?height=400&width=600"
-                            alt="Analyze your inbox"
-                            className="h-full w-full object-cover"
-                            width={600}
-                            height={400}
-                          />
-                        </div>
+                      <div className="hidden h-full md:block bg-muted p-4 sm:p-4 relative aspect-video w-full overflow-hidden border shadow-sm">
+                        <Image
+                          src={analyzeEmail}
+                          alt="Connect your email"
+                          className="h-full w-full object-fill rounded-lg border"
+                          width={400}
+                          height={300}
+                        />
                       </div>
                     </div>
                   </TabsContent>
                   <TabsContent value="manage" className="p-0">
-                    <div className="grid md:grid-cols-2">
-                      <div className="flex flex-col justify-center p-8">
-                        <h3 className="text-2xl font-bold">
+                    <div className="grid grid-cols-1 md:grid-cols-2">
+                      <div className="flex flex-col justify-center p-6 sm:p-8">
+                        <h3 className="text-xl sm:text-2xl font-bold">
                           Manage Everything
                         </h3>
                         <p className="mt-2 text-muted-foreground">
@@ -455,16 +458,14 @@ export default function HomePage() {
                           </li>
                         </ul>
                       </div>
-                      <div className="bg-muted p-6">
-                        <div className="overflow-hidden rounded-lg border bg-background shadow-sm">
-                          <img
-                            src="/placeholder.svg?height=400&width=600"
-                            alt="Manage your inbox"
-                            className="h-full w-full object-cover"
-                            width={600}
-                            height={400}
-                          />
-                        </div>
+                      <div className="hidden h-full md:block bg-muted p-4 sm:p-4 relative aspect-video w-full overflow-hidden border shadow-sm">
+                        <Image
+                          src={manageEmail}
+                          alt="Connect your email"
+                          className="h-full w-full object-fill rounded-lg border"
+                          width={400}
+                          height={300}
+                        />
                       </div>
                     </div>
                   </TabsContent>

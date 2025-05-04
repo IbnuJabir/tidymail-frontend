@@ -5,34 +5,35 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Image from "next/image";
-import { motion } from "framer-motion"; // Added for animations
+import { motion } from "framer-motion";
+import manageEmails from "@/assets/manageEmail.png";
+import analyzeSubscriptions from "@/assets/analyzeEmail.png";
 
 export default function TutorialPage() {
   const router = useRouter();
 
   const tutorials = [
-    // Removed the commented-out 'emails' section as per original code
     {
       id: "subscriptions",
-      title: "Manage Subscriptions", // Slightly clearer title
+      title: "Manage Subscriptions",
       steps: [
         "View all subscriptions listed clearly.",
         "Unsubscribe from unwanted emails with a single click.",
         "Optionally move subscription emails to trash or delete permanently.",
         "Filter subscriptions easily by name, email, or domain.",
       ],
-      image: "/placeholder.svg?height=200&width=400", // Replace with actual relevant image
+      image: analyzeSubscriptions,
     },
     {
       id: "actions",
-      title: "Perform Bulk Actions", // Slightly clearer title
+      title: "Perform Bulk Actions", 
       steps: [
         "Select multiple subscriptions or emails using checkboxes.",
         "Use the bulk action buttons (e.g., Unsubscribe, Trash).",
         "Confirm your actions in the confirmation dialog.",
         "Track the status of bulk actions easily.",
       ],
-      image: "/placeholder.svg?height=200&width=400", // Replace with actual relevant image
+      image: manageEmails,
     },
   ];
 
