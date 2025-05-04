@@ -34,7 +34,7 @@ export default function TermsPage() {
           </p>
           <p>
             You retain ownership of your data. We only process the necessary data
-            for the app's functionality. You are responsible for your account security.
+            for the app&apos;s functionality. You are responsible for your account security.
             We may update these terms and will notify you of significant changes.
           </p>
 

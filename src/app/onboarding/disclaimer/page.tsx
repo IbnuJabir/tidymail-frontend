@@ -37,7 +37,7 @@ export default function DisclaimerPage() {
             <strong className="text-foreground"> We do not store or analyze the content (body) of your emails.</strong>
           </li>
           <li>
-            We only process the minimal data necessary (sender information) for the app's core functionality: identifying and managing subscriptions.
+            We only process the minimal data necessary (sender information) for the app&apos;s core functionality: identifying and managing subscriptions.
           </li>
           <li>Your extracted subscription data is stored securely and is never shared with third parties.</li>
           <li>You can request the deletion of your account and associated data at any time.</li>

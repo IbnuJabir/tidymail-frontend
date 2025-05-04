@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-import { analyseSubcription } from "@/services/email-service"; // Assuming this service exists
+// import { analyseSubcription } from "@/services/email-service"; // Assuming this service exists
 import Image from "next/image";
 import { motion } from "framer-motion"; // Added for animations
 
