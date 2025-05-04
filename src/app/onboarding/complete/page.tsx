@@ -69,7 +69,7 @@ export default function CompletePage() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="flex flex-col items-center text-center max-w-md"
+          className="mx-auto flex flex-col items-center text-center max-w-md"
         >
           <div className="relative mb-8">
             {/* Animated envelope with scanning effect */}

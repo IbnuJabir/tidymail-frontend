@@ -500,8 +500,8 @@ export default function HomePage() {
                       />
                     </div>
                     <div>
-                      <CardTitle className="text-base">Sarah Johnson</CardTitle>
-                      <CardDescription>Marketing Manager</CardDescription>
+                      <CardTitle className="text-base">Bonson Alo</CardTitle>
+                      <CardDescription>Software Engineer</CardDescription>
                     </div>
                   </div>
                 </CardHeader>
@@ -533,8 +533,8 @@ export default function HomePage() {
                       />
                     </div>
                     <div>
-                      <CardTitle className="text-base">Michael Chen</CardTitle>
-                      <CardDescription>Software Developer</CardDescription>
+                      <CardTitle className="text-base">Mensur Muhammed</CardTitle>
+                      <CardDescription>UI/UX and Product Designer</CardDescription>
                     </div>
                   </div>
                 </CardHeader>
@@ -567,9 +567,9 @@ export default function HomePage() {
                     </div>
                     <div>
                       <CardTitle className="text-base">
-                        Emily Rodriguez
+                        Esmael Uta
                       </CardTitle>
-                      <CardDescription>Small Business Owner</CardDescription>
+                      <CardDescription>Data Scientist</CardDescription>
                     </div>
                   </div>
                 </CardHeader>
