@@ -3,8 +3,6 @@ import Link from "next/link";
 import {
   ArrowRight,
   CheckCircle,
-  CheckCircle2,
-  Laptop2,
   Mail,
   Sparkles,
   Trash,

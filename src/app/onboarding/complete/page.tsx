@@ -18,7 +18,7 @@ export default function CompletePage() {
 
   const [startAnalysis, setStartAnalysis] = useState(false);
 
-  const { data, isLoading, isError, error } = useQuery({
+  const { isLoading, isError, error } = useQuery({
     queryKey: ["analyze-subscription"],
     queryFn: analyseSubcription,
     enabled: startAnalysis,
@@ -117,7 +117,7 @@ export default function CompletePage() {
           </h2>
 
           <p className="text-muted-foreground mb-6">
-            We're scanning your inbox to identify and organize all your
+            We&apos;re scanning your inbox to identify and organize all your
             subscriptions. This may take a moment depending on the size of your
             inbox.
           </p>
@@ -191,7 +191,7 @@ export default function CompletePage() {
           <h2 className="text-2xl font-bold mb-4">Analysis Complete!</h2>
 
           <p className="text-muted-foreground mb-8">
-            We've successfully analyzed your inbox and identified all your
+            We&apos;ve successfully analyzed your inbox and identified all your
             subscriptions. You can now manage them from your dashboard and take
             control of your inbox.
           </p>
