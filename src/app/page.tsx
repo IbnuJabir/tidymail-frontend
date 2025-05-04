@@ -4,7 +4,6 @@ import {
   ArrowRight,
   CheckCircle,
   Mail,
-  Sparkles,
   Star,
   Trash,
   UserRound,
