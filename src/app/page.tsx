@@ -24,6 +24,10 @@ import FaqAccordion from "@/components/FaqAccordion";
 import connectGmail from "@/assets/connectGmail.png";
 import analyzeEmail from "@/assets/analyzeEmail.png";
 import manageEmail from "@/assets/manageEmail.png";
+import bonson from "@/assets/bonson.jpg";
+import mensur from "@/assets/mensur.jpg";
+import esmael from "@/assets/esmael.jpg";
+
 export default function HomePage() {
   const { data: user } = useUser();
   return (
@@ -31,10 +35,10 @@ export default function HomePage() {
       {/* Navigation */}
       <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl flex h-16 items-center justify-between">
-          <div className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2">
             <Mail className="h-6 w-6 text-primary" />
             <span className="text-xl font-bold">TidyMail</span>
-          </div>
+          </Link>
           <nav className="hidden gap-6 md:flex">
             <Link
               href="#features"
@@ -492,7 +496,7 @@ export default function HomePage() {
                   <div className="flex items-center gap-4">
                     <div className="h-10 w-10 overflow-hidden rounded-full bg-muted">
                       <Image
-                        src="/placeholder.svg?height=40&width=40"
+                        src={bonson}
                         alt="User avatar"
                         className="h-full w-full object-cover"
                         width={40}
@@ -508,7 +512,7 @@ export default function HomePage() {
                 <CardContent>
                   <div className="flex mb-2">
                     {[...Array(5)].map((_, i) => (
-                      <Star  key={i} className="h-4 w-4 text-yellow-400" />
+                      <Star key={i} className="h-4 w-4 text-yellow-400" />
                     ))}
                   </div>
                   <p className="text-muted-foreground">
@@ -525,7 +529,7 @@ export default function HomePage() {
                   <div className="flex items-center gap-4">
                     <div className="h-10 w-10 overflow-hidden rounded-full bg-muted">
                       <Image
-                        src="/placeholder.svg?height=40&width=40"
+                        src={mensur}
                         alt="User avatar"
                         className="h-full w-full object-cover"
                         width={40}
@@ -533,22 +537,26 @@ export default function HomePage() {
                       />
                     </div>
                     <div>
-                      <CardTitle className="text-base">Mensur Muhammed</CardTitle>
-                      <CardDescription>UI/UX and Product Designer</CardDescription>
+                      <CardTitle className="text-base">
+                        Mensur Muhammed
+                      </CardTitle>
+                      <CardDescription>
+                        UI/UX and Product Designer
+                      </CardDescription>
                     </div>
                   </div>
                 </CardHeader>
                 <CardContent>
                   <div className="flex mb-2">
                     {[...Array(5)].map((_, i) => (
-                      <Star  key={i} className="h-4 w-4 text-yellow-400" />
+                      <Star key={i} className="h-4 w-4 text-yellow-400" />
                     ))}
                   </div>
                   <p className="text-muted-foreground">
                     &ldquo;As someone who gets hundreds of emails daily,
-                    TidyMail has been a lifesaver. The bulk actions and smart
-                    categorization help me stay organized without spending hours
-                    managing my inbox.&rdquo;
+                    TidyMail has been a lifesaver. The bulk actions and
+                    subscription management help me stay organized without
+                    spending hours managing my inbox.&rdquo;
                   </p>
                 </CardContent>
               </Card>
@@ -558,7 +566,7 @@ export default function HomePage() {
                   <div className="flex items-center gap-4">
                     <div className="h-10 w-10 overflow-hidden rounded-full bg-muted">
                       <Image
-                        src="/placeholder.svg?height=40&width=40"
+                        src={esmael}
                         alt="User avatar"
                         className="h-full w-full object-cover"
                         width={40}
@@ -566,9 +574,7 @@ export default function HomePage() {
                       />
                     </div>
                     <div>
-                      <CardTitle className="text-base">
-                        Esmael Uta
-                      </CardTitle>
+                      <CardTitle className="text-base">Esmael Uta</CardTitle>
                       <CardDescription>Data Scientist</CardDescription>
                     </div>
                   </div>
@@ -576,7 +582,7 @@ export default function HomePage() {
                 <CardContent>
                   <div className="flex mb-2">
                     {[...Array(5)].map((_, i) => (
-                      <Star  key={i} className="h-4 w-4 text-yellow-400" />
+                      <Star key={i} className="h-4 w-4 text-yellow-400" />
                     ))}
                   </div>
                   <p className="text-muted-foreground">
