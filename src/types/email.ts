@@ -67,3 +67,30 @@ export interface GetSubscriptionsResponse {
   page: number;
   limit: number;
 }
+
+export interface AnalysisBatchData {
+  is_complete: boolean;
+  next_page_token: string | null;
+  new_subscriptions: number;
+  processed_count: number;
+}
+
+export interface AnalysisBatchResult {
+  status: string;
+  message: string;
+  data: AnalysisBatchData;
+}
+
+export interface AnalysisProgressResponse {
+  totalProcessed: number;
+  totalNewSubscriptions: number;
+  isComplete: boolean;
+  error: string | null;
+}
+
+export interface BatchResult {
+  processed_count: number;
+  new_subscriptions: number;
+  is_complete: boolean;
+  next_page_token?: string;
+}

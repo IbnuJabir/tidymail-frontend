@@ -3,6 +3,7 @@ import {
   Email,
   SubscriptionResponse,
   GetSubscriptionsResponse,
+  AnalysisBatchResult,
 } from "@/types/email";
 
 interface EmailResponse {
@@ -32,12 +33,28 @@ export async function fetchEmails(): Promise<{
   }
 }
 
-export async function analyseSubcription() {
+export async function analyzeSubscriptionBatch(
+  pageToken?: string | null,
+  batchSize: number = 50
+): Promise<AnalysisBatchResult> {
   try {
-    const response = await api.get("/subscription/analyze-subscriptions");
+    let url = "/subscription/analyze-subscriptions";
+
+    // Add query parameters if provided
+    const params = new URLSearchParams();
+    if (pageToken) {
+      params.append("page_token", pageToken);
+    }
+    params.append("batch_size", batchSize.toString());
+
+    if (params.toString()) {
+      url += `?${params.toString()}`;
+    }
+
+    const response = await api.get(url);
     return response.data;
   } catch (error) {
-    console.error("Error analysing subscription:", error);
+    console.error("Error analyzing subscription batch:", error);
     throw error;
   }
 }

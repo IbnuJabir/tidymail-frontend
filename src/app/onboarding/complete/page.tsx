@@ -2,11 +2,12 @@
 
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Loader2, Mail} from "lucide-react";
+import { CheckCircle, Loader2, Mail } from "lucide-react";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { useQuery } from "@tanstack/react-query";
-import { analyseSubcription } from "@/services/email-service";
+// import { useQuery } from "@tanstack/react-query";
+import { analyzeSubscriptionBatch } from "@/services/email-service";
+import { AnalysisProgressResponse } from "@/types/email";
 
 export default function CompletePage() {
   const router = useRouter();
@@ -17,16 +18,96 @@ export default function CompletePage() {
   }, []);
 
   const [startAnalysis, setStartAnalysis] = useState(false);
+  const [analysisProgress, setAnalysisProgress] =
+    useState<AnalysisProgressResponse>({
+      totalProcessed: 0,
+      totalNewSubscriptions: 0,
+      isComplete: false,
+      error: null,
+    });
 
-  const { isLoading, isError, error } = useQuery({
-    queryKey: ["analyze-subscription"],
-    queryFn: analyseSubcription,
-    enabled: startAnalysis,
-    retry: false,
+  // State to track current batch processing
+  const [currentBatch, setCurrentBatch] = useState({
+    pageToken: null as string | null,
+    isProcessing: false,
   });
+
+  // Function to process a single batch
+  const processBatch = async (pageToken: string | null = null) => {
+    try {
+      setCurrentBatch({ pageToken, isProcessing: true });
+
+      const batchResult = await analyzeSubscriptionBatch(pageToken);
+
+      // Update progress
+      setAnalysisProgress((prev) => ({
+        totalProcessed: prev.totalProcessed + batchResult.data.processed_count,
+        totalNewSubscriptions:
+          prev.totalNewSubscriptions + batchResult.data.new_subscriptions,
+        isComplete: batchResult.data.is_complete,
+        error: null,
+      }));
+
+      // If not complete, schedule next batch
+      if (!batchResult.data.is_complete && batchResult.data.next_page_token) {
+        // Small delay to avoid overwhelming the server
+        setTimeout(() => {
+          processBatch(batchResult.data.next_page_token);
+        }, 300);
+      } else {
+        // Analysis complete
+        setCurrentBatch({ pageToken: null, isProcessing: false });
+      }
+    } catch (error) {
+      console.error("Error processing batch:", error);
+      setAnalysisProgress((prev) => ({
+        ...prev,
+        error: (error as Error).message,
+      }));
+      setCurrentBatch({ pageToken: null, isProcessing: false });
+    }
+  };
+
+  // Start the analysis when requested
+  useEffect(() => {
+    if (
+      startAnalysis &&
+      !currentBatch.isProcessing &&
+      !analysisProgress.isComplete &&
+      !analysisProgress.error
+    ) {
+      processBatch();
+    }
+  }, [startAnalysis]);
 
   const handleAnalyze = () => setStartAnalysis(true);
   const goToDashboard = () => router.push("/subscriptions");
+  const retryAnalysis = () => {
+    setAnalysisProgress({
+      totalProcessed: 0,
+      totalNewSubscriptions: 0,
+      isComplete: false,
+      error: null,
+    });
+    setCurrentBatch({ pageToken: null, isProcessing: false });
+    // Small delay before restarting
+    setTimeout(() => {
+      setStartAnalysis(true);
+    }, 100);
+  };
+
+  // Display progress percentage
+  const progressPercentage =
+    analysisProgress.totalProcessed > 0
+      ? Math.min(
+          Math.floor(
+            (analysisProgress.totalProcessed /
+              (analysisProgress.totalProcessed + 50)) *
+              100
+          ),
+          99
+        )
+      : 0;
 
   return (
     <div>
@@ -65,7 +146,10 @@ export default function CompletePage() {
             Analyze Your Subscriptions
           </Button>
         </motion.div>
-      ) : isLoading ? (
+      ) : currentBatch.isProcessing ||
+        (!analysisProgress.isComplete &&
+          startAnalysis &&
+          !analysisProgress.error) ? (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -122,12 +206,28 @@ export default function CompletePage() {
             inbox.
           </p>
 
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Loader2 className="h-4 w-4 animate-spin" />
-            <span>Processing your emails...</span>
+          {/* Progress indicators */}
+          <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
+            <div
+              className="bg-primary h-2 rounded-full"
+              style={{ width: `${progressPercentage}%` }}
+            />
           </div>
+
+          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            <span>
+              Processing emails: {analysisProgress.totalProcessed} processed
+            </span>
+          </div>
+
+          {analysisProgress.totalNewSubscriptions > 0 && (
+            <div className="text-sm text-green-600 mb-4">
+              Found {analysisProgress.totalNewSubscriptions} new subscriptions
+            </div>
+          )}
         </motion.div>
-      ) : isError ? (
+      ) : analysisProgress.error ? (
         <div className="mx-auto flex flex-col items-center text-center max-w-md">
           <div className="rounded-full bg-red-100 p-4 mb-6 inline-block">
             <svg
@@ -152,17 +252,10 @@ export default function CompletePage() {
           </p>
 
           <div className="p-4 bg-red-50 border border-red-200 rounded-md text-red-700 mb-6">
-            {(error as Error).message}
+            {analysisProgress.error}
           </div>
           <div className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
-            <Button
-              onClick={() => {
-                setStartAnalysis(false);
-                setTimeout(() => setStartAnalysis(true), 100);
-              }}
-              variant="outline"
-              className="mr-2"
-            >
+            <Button onClick={retryAnalysis} variant="outline" className="mr-2">
               Try Again
             </Button>
             <Button onClick={() => router.push("/")}>Go to Home</Button>
@@ -172,7 +265,7 @@ export default function CompletePage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col items-center text-center max-w-md"
+          className="flex flex-col items-center text-center max-w-md mx-auto"
         >
           <motion.div
             initial={{ scale: 0 }}
@@ -190,11 +283,20 @@ export default function CompletePage() {
 
           <h2 className="text-2xl font-bold mb-4">Analysis Complete!</h2>
 
-          <p className="text-muted-foreground mb-8">
+          <p className="text-muted-foreground mb-4">
             We&apos;ve successfully analyzed your inbox and identified all your
             subscriptions. You can now manage them from your dashboard and take
             control of your inbox.
           </p>
+
+          <div className="bg-green-50 p-4 rounded-md mb-8 w-full">
+            <p className="font-medium text-green-700">
+              Processed {analysisProgress.totalProcessed} emails
+            </p>
+            <p className="font-medium text-green-700">
+              Found {analysisProgress.totalNewSubscriptions} subscriptions
+            </p>
+          </div>
 
           <Button onClick={goToDashboard} size="lg">
             Go to Dashboard
