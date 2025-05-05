@@ -35,7 +35,7 @@ export async function fetchEmails(): Promise<{
 
 export async function analyzeSubscriptionBatch(
   pageToken?: string | null,
-  batchSize: number = 100
+  batchSize: number = 70
 ): Promise<AnalysisBatchResult> {
   try {
     let url = "/subscription/analyze-subscriptions";
