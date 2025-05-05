@@ -27,6 +27,7 @@ import manageEmail from "@/assets/manageEmail.png";
 import bonson from "@/assets/bonson.jpg";
 import mensur from "@/assets/mensur.jpg";
 import esmael from "@/assets/esmael.jpg";
+import { ModeToggle } from "@/components/toogle-theme";
 
 export default function HomePage() {
   const { data: user } = useUser();
@@ -78,6 +79,7 @@ export default function HomePage() {
               </Link>
             </div>
           )}
+          <ModeToggle />
         </div>
       </header>
 
