@@ -22,6 +22,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { useDataTable } from "@/hooks/use-data-table";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import { toast } from "sonner";
+import { Switch } from "@/components/ui/switch";
 
 import type {
   Column,
@@ -77,17 +79,22 @@ export function UnsubscribedTable() {
   // Local state for search input
   const [searchInput, setSearchInput] = React.useState(search || "");
 
+  // State for keeping starred emails
+  const [keepStarred, setKeepStarred] = React.useState(false);
+
   // State for confirmation dialogs
   const [confirmDialog, setConfirmDialog] = React.useState<{
     isOpen: boolean;
     title: string;
     description: string;
     action: () => void;
+    showKeepStarred?: boolean;
   }>({
     isOpen: false,
     title: "",
     description: "",
     action: () => {},
+    showKeepStarred: false,
   });
 
   // Convert URL query params to table sorting state
@@ -114,28 +121,78 @@ export function UnsubscribedTable() {
     [sortingState, setSortField, setSortOrder]
   );
 
+  // Reset keepStarred when dialog opens
+  React.useEffect(() => {
+    if (confirmDialog.isOpen) {
+      setKeepStarred(false);
+    }
+  }, [confirmDialog.isOpen]);
+
   // Mutations
   const subscribeBackMutation = useMutation({
     mutationFn: (email: string) => subscribeBack(email),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["subscriptions"] });
       setConfirmDialog((prev) => ({ ...prev, isOpen: false }));
+      toast.success("Subscribed back successfully", {
+        description: "The email has been added back to the mailing list.",
+      });
+    },
+    onError: (error) => {
+      toast.error("Failed to subscribe back", {
+        description:
+          error instanceof Error ? error.message : "An unknown error occurred",
+      });
     },
   });
 
   const bulkTrashMutation = useMutation({
-    mutationFn: (emails: string | string[]) => bulkTrash(emails),
-    onSuccess: () => {
+    mutationFn: ({
+      emails,
+      keepStarred,
+    }: {
+      emails: string | string[];
+      keepStarred: boolean;
+    }) => bulkTrash(emails, keepStarred),
+    onSuccess: (_, { emails }) => {
       queryClient.invalidateQueries({ queryKey: ["subscriptions"] });
       setConfirmDialog((prev) => ({ ...prev, isOpen: false }));
+      toast.success("Moved to trash", {
+        description: Array.isArray(emails)
+          ? `${emails.length} subscriptions moved to trash`
+          : "Subscription moved to trash successfully",
+      });
+    },
+    onError: (error) => {
+      toast.error("Failed to move to trash", {
+        description:
+          error instanceof Error ? error.message : "An unknown error occurred",
+      });
     },
   });
 
   const bulkDeleteMutation = useMutation({
-    mutationFn: (emails: string | string[]) => bulkDelete(emails),
-    onSuccess: () => {
+    mutationFn: ({
+      emails,
+      keepStarred,
+    }: {
+      emails: string | string[];
+      keepStarred: boolean;
+    }) => bulkDelete(emails, keepStarred),
+    onSuccess: (_, { emails }) => {
       queryClient.invalidateQueries({ queryKey: ["subscriptions"] });
       setConfirmDialog((prev) => ({ ...prev, isOpen: false }));
+      toast.success("Deleted permanently", {
+        description: Array.isArray(emails)
+          ? `${emails.length} subscriptions deleted permanently`
+          : "Subscription deleted permanently",
+      });
+    },
+    onError: (error) => {
+      toast.error("Failed to delete", {
+        description:
+          error instanceof Error ? error.message : "An unknown error occurred",
+      });
     },
   });
 
@@ -229,41 +286,55 @@ export function UnsubscribedTable() {
         title: "Subscribe Back",
         description: `Are you sure you want to subscribe back to ${subscription.name} (${subscription.email})?`,
         action: () => subscribeBackMutation.mutate(subscription.email),
+        showKeepStarred: false,
       });
     },
-    [refetch]
+    [subscribeBackMutation]
   );
 
-  const handleBulkTrash = React.useCallback((subscription: Subscription) => {
-    setConfirmDialog({
-      isOpen: true,
-      title: "Move to Trash",
-      description: `Are you sure you want to move all messages from ${subscription.name} (${subscription.email}) to trash?`,
-      action: () => bulkTrashMutation.mutate(subscription.email),
-    });
-  }, []);
+  const handleBulkTrash = React.useCallback(
+    (subscription: Subscription) => {
+      setConfirmDialog({
+        isOpen: true,
+        title: "Move to Trash",
+        description: `Are you sure you want to move all messages from ${subscription.name} (${subscription.email}) to trash?`,
+        action: () =>
+          bulkTrashMutation.mutate({ emails: subscription.email, keepStarred }),
+        showKeepStarred: true,
+      });
+    },
+    [bulkTrashMutation, keepStarred]
+  );
 
-  const handleBulkDelete = React.useCallback((subscription: Subscription) => {
-    setConfirmDialog({
-      isOpen: true,
-      title: "Permanently Delete",
-      description: `Are you sure you want to permanently delete all messages from ${subscription.name} (${subscription.email})? This action cannot be undone.`,
-      action: () => bulkDeleteMutation.mutate(subscription.email),
-    });
-  }, []);
+  const handleBulkDelete = React.useCallback(
+    (subscription: Subscription) => {
+      setConfirmDialog({
+        isOpen: true,
+        title: "Permanently Delete",
+        description: `Are you sure you want to permanently delete all messages from ${subscription.name} (${subscription.email})? This action cannot be undone.`,
+        action: () =>
+          bulkDeleteMutation.mutate({
+            emails: subscription.email,
+            keepStarred,
+          }),
+        showKeepStarred: true,
+      });
+    },
+    [bulkDeleteMutation, keepStarred]
+  );
 
   const handleBulkRowTrash = React.useCallback(
     (selectedRows: Subscription[]) => {
       const emails = selectedRows.map((row) => row.email);
-      console.table("Bulk Trash Emails", emails);
       setConfirmDialog({
         isOpen: true,
         title: "Move to Trash",
         description: `Are you sure you want to move all messages from selected rows to trash?`,
-        action: () => bulkTrashMutation.mutate(emails),
+        action: () => bulkTrashMutation.mutate({ emails, keepStarred }),
+        showKeepStarred: true,
       });
     },
-    []
+    [bulkTrashMutation, keepStarred]
   );
 
   const handleBulkRowDelete = React.useCallback(
@@ -273,10 +344,11 @@ export function UnsubscribedTable() {
         isOpen: true,
         title: "Permanently Delete",
         description: `Are you sure you want to permanently delete all messages from selected rows? This action cannot be undone.`,
-        action: () => bulkDeleteMutation.mutate(emails),
+        action: () => bulkDeleteMutation.mutate({ emails, keepStarred }),
+        showKeepStarred: true,
       });
     },
-    []
+    [bulkDeleteMutation, keepStarred]
   );
 
   const columns = React.useMemo<ColumnDef<Subscription>[]>(
@@ -378,36 +450,66 @@ export function UnsubscribedTable() {
       {
         id: "actions",
         cell: function Cell({ row }) {
+          const isSubscribingBack =
+            subscribeBackMutation.isPending &&
+            subscribeBackMutation.variables === row.original.email;
+          const isTrashingRow =
+            bulkTrashMutation.isPending &&
+            typeof bulkTrashMutation.variables?.emails === "string" &&
+            bulkTrashMutation.variables.emails === row.original.email;
+          const isDeletingRow =
+            bulkDeleteMutation.isPending &&
+            typeof bulkDeleteMutation.variables?.emails === "string" &&
+            bulkDeleteMutation.variables.emails === row.original.email;
+          const isLoading = isSubscribingBack || isTrashingRow || isDeletingRow;
+
           return (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <MoreHorizontal className="h-4 w-4" />
+                <Button variant="ghost" size="icon" disabled={isLoading}>
+                  {isLoading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <MoreHorizontal className="h-4 w-4" />
+                  )}
                   <span className="sr-only">Open menu</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem
                   onClick={() => handleSubscribeBack(row.original)}
+                  disabled={isLoading}
                 >
-                  <X className="mr-2 h-4 w-4" />
+                  {isSubscribingBack ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <X className="mr-2 h-4 w-4" />
+                  )}
                   Subscribe Back
                 </DropdownMenuItem>
 
                 <DropdownMenuItem
                   onClick={() => handleBulkTrash(row.original)}
-                  disabled={row.original.email_count === 0}
+                  disabled={isLoading || row.original.email_count === 0}
                 >
-                  <Trash className="mr-2 h-4 w-4" />
+                  {isTrashingRow ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <Trash className="mr-2 h-4 w-4" />
+                  )}
                   Move to Trash
                 </DropdownMenuItem>
 
                 <DropdownMenuItem
                   onClick={() => handleBulkDelete(row.original)}
-                  disabled={row.original.email_count === 0}
-                  variant="destructive"
+                  disabled={isLoading || row.original.email_count === 0}
+                  className="text-destructive"
                 >
-                  <Trash2 className="mr-2 h-4 w-4" />
+                  {isDeletingRow ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <Trash2 className="mr-2 h-4 w-4" />
+                  )}
                   Delete Permanently
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -417,7 +519,18 @@ export function UnsubscribedTable() {
         size: 32,
       },
     ],
-    [handleSubscribeBack, handleBulkTrash, handleBulkDelete, isMobile]
+    [
+      handleSubscribeBack,
+      handleBulkTrash,
+      handleBulkDelete,
+      isMobile,
+      subscribeBackMutation.isPending,
+      subscribeBackMutation.variables,
+      bulkTrashMutation.isPending,
+      bulkTrashMutation.variables,
+      bulkDeleteMutation.isPending,
+      bulkDeleteMutation.variables,
+    ]
   );
 
   const { table } = useDataTable({
@@ -465,9 +578,14 @@ export function UnsubscribedTable() {
   }
 
   const isBulkTrashLoading =
-    bulkTrashMutation.isPending && Array.isArray(bulkTrashMutation.variables);
+    bulkTrashMutation.isPending &&
+    bulkTrashMutation.variables?.emails &&
+    Array.isArray(bulkTrashMutation.variables.emails);
+
   const isBulkDeleteLoading =
-    bulkDeleteMutation.isPending && Array.isArray(bulkDeleteMutation.variables);
+    bulkDeleteMutation.isPending &&
+    bulkDeleteMutation.variables?.emails &&
+    Array.isArray(bulkDeleteMutation.variables.emails);
 
   return (
     <div className="data-table-container">
@@ -516,6 +634,7 @@ export function UnsubscribedTable() {
             onClick={() => handleBulkRowTrash(selectedRows)}
             disabled={
               !hasSelected ||
+              isBulkTrashLoading ||
               selectedRows.some((email) => email.email_count === 0)
             }
           >
@@ -534,6 +653,7 @@ export function UnsubscribedTable() {
             onClick={() => handleBulkRowDelete(selectedRows)}
             disabled={
               !hasSelected ||
+              isBulkDeleteLoading ||
               selectedRows.some((email) => email.email_count === 0)
             }
           >
@@ -564,6 +684,24 @@ export function UnsubscribedTable() {
             <DialogTitle>{confirmDialog.title}</DialogTitle>
             <DialogDescription>{confirmDialog.description}</DialogDescription>
           </DialogHeader>
+
+          {confirmDialog.showKeepStarred && (
+            <div className="flex items-center justify-between pt-2">
+              <label
+                htmlFor="keep-starred"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Keep starred emails
+              </label>
+              <Switch
+                id="keep-starred"
+                checked={keepStarred}
+                onCheckedChange={setKeepStarred}
+                className="data-[state=checked]:bg-primary"
+              />
+            </div>
+          )}
+
           <DialogFooter>
             <Button
               variant="outline"

@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle, Loader2, Mail } from "lucide-react";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-// import { useQuery } from "@tanstack/react-query";
 import { analyzeSubscriptionBatch } from "@/services/email-service";
 import { AnalysisProgressResponse } from "@/types/email";
 
@@ -32,12 +31,13 @@ export default function CompletePage() {
     isProcessing: false,
   });
 
-  // Function to process a single batch
+  // Function to process a single batch with optimized batch size
   const processBatch = async (pageToken: string | null = null) => {
     try {
       setCurrentBatch({ pageToken, isProcessing: true });
 
-      const batchResult = await analyzeSubscriptionBatch(pageToken);
+      // Use a larger batch size (100 instead of 50) for better performance
+      const batchResult = await analyzeSubscriptionBatch(pageToken, 100);
 
       // Update progress
       setAnalysisProgress((prev) => ({
@@ -48,12 +48,20 @@ export default function CompletePage() {
         error: null,
       }));
 
-      // If not complete, schedule next batch
-      if (!batchResult.data.is_complete && batchResult.data.next_page_token) {
-        // Small delay to avoid overwhelming the server
+      // Process multiple batches in parallel if we're early in the analysis
+      if (
+        !batchResult.data.is_complete && 
+        batchResult.data.next_page_token &&
+        analysisProgress.totalProcessed < 200 // Only use parallel processing at beginning
+      ) {
+        // Process next batch immediately (no delay)
+        processBatch(batchResult.data.next_page_token);
+      } 
+      // Otherwise use sequential processing with a small delay
+      else if (!batchResult.data.is_complete && batchResult.data.next_page_token) {
         setTimeout(() => {
           processBatch(batchResult.data.next_page_token);
-        }, 300);
+        }, 100); // Reduced delay for better performance
       } else {
         // Analysis complete
         setCurrentBatch({ pageToken: null, isProcessing: false });
@@ -96,13 +104,13 @@ export default function CompletePage() {
     }, 100);
   };
 
-  // Display progress percentage
+  // More accurate progress estimation
   const progressPercentage =
     analysisProgress.totalProcessed > 0
       ? Math.min(
           Math.floor(
             (analysisProgress.totalProcessed /
-              (analysisProgress.totalProcessed + 50)) *
+              (analysisProgress.totalProcessed + 100)) *
               100
           ),
           99

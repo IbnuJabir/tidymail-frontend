@@ -1,5 +1,5 @@
 import api from "@/lib/api";
-import {
+import type {
   Email,
   SubscriptionResponse,
   GetSubscriptionsResponse,
@@ -33,24 +33,27 @@ export async function fetchEmails(): Promise<{
   }
 }
 
+/**
+ * Analyzes a single batch of subscriptions from the user's inbox
+ * @param pageToken Optional token for pagination
+ * @param batchSize Number of emails to process in this batch
+ * @returns Results of the batch analysis
+ */
 export async function analyzeSubscriptionBatch(
   pageToken?: string | null,
-  batchSize: number = 50
+  batchSize = 100 // Increased batch size for better performance
 ): Promise<AnalysisBatchResult> {
   try {
     let url = "/subscription/analyze-subscriptions";
-
     // Add query parameters if provided
     const params = new URLSearchParams();
     if (pageToken) {
       params.append("page_token", pageToken);
     }
     params.append("batch_size", batchSize.toString());
-
     if (params.toString()) {
       url += `?${params.toString()}`;
     }
-
     const response = await api.get(url);
     return response.data;
   } catch (error) {
@@ -59,6 +62,54 @@ export async function analyzeSubscriptionBatch(
   }
 }
 
+/**
+ * Optimized version that processes multiple batches in parallel
+ * Use this when you want to speed up processing with parallel requests
+ * @param pageTokens Array of page tokens to process in parallel
+ * @param batchSize Number of emails to process in each batch
+ * @returns Combined results from all batches
+ */
+export async function analyzeSubscriptionParallel(
+  pageTokens: (string | null)[],
+  batchSize = 100
+): Promise<{
+  totalProcessed: number;
+  totalNewSubscriptions: number;
+  nextPageTokens: (string | null)[];
+  allComplete: boolean;
+}> {
+  try {
+    // Process all batches in parallel
+    const results = await Promise.all(
+      pageTokens.map((token) => analyzeSubscriptionBatch(token, batchSize))
+    );
+
+    // Combine results
+    const combinedResult = {
+      totalProcessed: 0,
+      totalNewSubscriptions: 0,
+      nextPageTokens: [] as (string | null)[],
+      allComplete: true,
+    };
+
+    results.forEach((result) => {
+      combinedResult.totalProcessed += result.data.processed_count;
+      combinedResult.totalNewSubscriptions += result.data.new_subscriptions;
+
+      if (!result.data.is_complete) {
+        combinedResult.allComplete = false;
+        if (result.data.next_page_token) {
+          combinedResult.nextPageTokens.push(result.data.next_page_token);
+        }
+      }
+    });
+
+    return combinedResult;
+  } catch (error) {
+    console.error("Error in parallel subscription analysis:", error);
+    throw error;
+  }
+}
 export async function getSubscriptions(
   queryParams?: string
 ): Promise<GetSubscriptionsResponse> {
@@ -116,13 +167,22 @@ export async function getUnsubscribedEmails(
   }
 }
 
-export async function bulkTrash(emails: string | string[]) {
+export async function bulkTrash(
+  emails: string | string[],
+  keepStarred = false
+) {
   try {
+    let url = "/email/bulk-trash";
+    // Add keep_starred as a URL parameter
+    if (keepStarred) {
+      url += `?keep_starred=true`;
+    }
+
     let response;
     if (typeof emails === "string") {
-      response = await api.post("/email/bulk-trash", { emails: [emails] });
+      response = await api.post(url, { emails: [emails] });
     } else if (Array.isArray(emails) && emails.length > 0) {
-      response = await api.post("/email/bulk-trash", { emails });
+      response = await api.post(url, { emails });
     } else {
       throw new Error("No emails provided for bulk trash.");
     }
@@ -134,14 +194,22 @@ export async function bulkTrash(emails: string | string[]) {
   }
 }
 
-export async function bulkDelete(email: string | string[]) {
+export async function bulkDelete(
+  email: string | string[],
+  keepStarred = false
+) {
   try {
-    let response;
+    let url = "/email/bulk-delete";
+    // Add keep_starred as a URL parameter
+    if (keepStarred) {
+      url += `?keep_starred=true`;
+    }
 
+    let response;
     if (typeof email === "string") {
-      response = await api.post("/email/bulk-delete", { emails: [email] });
+      response = await api.post(url, { emails: [email] });
     } else if (Array.isArray(email) && email.length > 0) {
-      response = await api.post("/email/bulk-delete", { emails: email });
+      response = await api.post(url, { emails: email });
     } else {
       throw new Error("No emails provided for bulk delete.");
     }
