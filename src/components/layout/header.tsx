@@ -1,69 +1,100 @@
-"use client";
-import Link from "next/link";
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { ModeToggle } from "@/components/toogle-theme";
-import { useUser } from "@/hooks/useAuth";
-import { useState } from "react";
-import { Menu, X } from "lucide-react";
+"use client"
+import Link from "next/link"
+import Image from "next/image"
+import { Button } from "@/components/ui/button"
+import { ModeToggle } from "@/components/toogle-theme"
+import { useUser } from "@/hooks/useAuth"
+import { useState, useRef, useEffect } from "react"
+import { Menu, X } from "lucide-react"
+import { AnimatePresence, motion } from "framer-motion"
 import logo from "@/assets/logo.png";
 
 export default function Header() {
-  const { data: user } = useUser();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { data: user } = useUser()
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const menuRef = useRef<HTMLDivElement>(null)
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node) && isMenuOpen) {
+        setIsMenuOpen(false)
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [isMenuOpen])
+
+  // Prevent scrolling when menu is open
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = ""
+    }
+    return () => {
+      document.body.style.overflow = ""
+    }
+  }, [isMenuOpen])
+
+  const menuVariants = {
+    closed: {
+      opacity: 0,
+      height: 0,
+      transition: {
+        duration: 0.3,
+        ease: [0.4, 0.0, 0.2, 1],
+      },
+    },
+    open: {
+      opacity: 1,
+      height: "auto",
+      transition: {
+        duration: 0.4,
+        ease: [0.4, 0.0, 0.2, 1],
+      },
+    },
+  }
+
+  const itemVariants = {
+    closed: { opacity: 0, y: -10 },
+    open: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        delay: i * 0.05,
+        duration: 0.3,
+      },
+    }),
+  }
+
+  const menuItems = [
+    { href: "/#features", label: "Features" },
+    { href: "/#how-it-works", label: "How It Works" },
+    { href: "/#testimonials", label: "Testimonials" },
+    { href: "/#about", label: "About" },
+    { href: "/#pricing", label: "Pricing" },
+    { href: "/#contact", label: "Contact" },
+  ]
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
-          <Image
-            src={logo}
-            alt="TidyMail Logo"
-            className="h-8 w-8 rounded-full"
-            width={32}
-            height={32}
-          />
+          <Image src={logo} alt="TidyMail Logo" className="h-8 w-8 rounded-full" width={32} height={32} />
           <span className="text-xl font-bold">TidyMail</span>
         </Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden gap-6 md:flex">
-          <Link
-            href="/#features"
-            className="text-sm font-medium transition-colors hover:text-primary"
-          >
-            Features
-          </Link>
-          <Link
-            href="/#how-it-works"
-            className="text-sm font-medium transition-colors hover:text-primary"
-          >
-            How It Works
-          </Link>
-          <Link
-            href="/#testimonials"
-            className="text-sm font-medium transition-colors hover:text-primary"
-          >
-            Testimonials
-          </Link>
-          <Link
-            href="/#about"
-            className="text-sm font-medium transition-colors hover:text-primary"
-          >
-            About
-          </Link>
-          <Link
-            href="/#pricing"
-            className="text-sm font-medium transition-colors hover:text-primary"
-          >
-            Pricing
-          </Link>
-          <Link
-            href="/#contact"
-            className="text-sm font-medium transition-colors hover:text-primary"
-          >
-            Contact
-          </Link>
+          {menuItems.map((item) => (
+            <Link key={item.href} href={item.href} className="text-sm font-medium transition-colors hover:text-primary">
+              {item.label}
+            </Link>
+          ))}
         </nav>
 
         <div className="flex items-center gap-4">
@@ -85,85 +116,88 @@ export default function Header() {
 
           {/* Mobile menu button */}
           <button
-            className="md:hidden"
+            className="md:hidden flex items-center justify-center h-10 w-10 rounded-full hover:bg-muted transition-colors z-50"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           >
-            {isMenuOpen ? (
-              <X className="h-6 w-6" />
-            ) : (
-              <Menu className="h-6 w-6" />
-            )}
+            <AnimatePresence mode="wait">
+              {isMenuOpen ? (
+                <motion.div
+                  key="close"
+                  initial={{ rotate: -90, opacity: 0 }}
+                  animate={{ rotate: 0, opacity: 1 }}
+                  exit={{ rotate: 90, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <X className="h-6 w-6" />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="menu"
+                  initial={{ rotate: 90, opacity: 0 }}
+                  animate={{ rotate: 0, opacity: 1 }}
+                  exit={{ rotate: -90, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <Menu className="h-6 w-6" />
+                </motion.div>
+              )}
+            </AnimatePresence>
           </button>
         </div>
       </div>
 
       {/* Mobile Navigation */}
-      {isMenuOpen && (
-        <div className="md:hidden py-4 px-4 bg-background border-b">
-          <nav className="flex flex-col space-y-4">
-            <Link
-              href="/#features"
-              className="text-sm font-medium transition-colors hover:text-primary"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Features
-            </Link>
-            <Link
-              href="/#how-it-works"
-              className="text-sm font-medium transition-colors hover:text-primary"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              How It Works
-            </Link>
-            <Link
-              href="/#testimonials"
-              className="text-sm font-medium transition-colors hover:text-primary"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Testimonials
-            </Link>
-            <Link
-              href="/#about"
-              className="text-sm font-medium transition-colors hover:text-primary"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              About
-            </Link>
-            <Link
-              href="/#pricing"
-              className="text-sm font-medium transition-colors hover:text-primary"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Pricing
-            </Link>
-            <Link
-              href="/#contact"
-              className="text-sm font-medium transition-colors hover:text-primary"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Contact
-            </Link>
-            {user ? (
-              <Link href="/subscriptions" onClick={() => setIsMenuOpen(false)}>
-                <Button variant="outline" className="w-full">
-                  Dashboard
-                </Button>
-              </Link>
-            ) : (
-              <div className="flex flex-col gap-2">
-                <Link href="/login" onClick={() => setIsMenuOpen(false)}>
-                  <Button variant="outline" className="w-full">
-                    Login
-                  </Button>
-                </Link>
-                <Link href="/signup" onClick={() => setIsMenuOpen(false)}>
-                  <Button className="w-full">Sign Up Free</Button>
-                </Link>
-              </div>
-            )}
-          </nav>
-        </div>
-      )}
+      <AnimatePresence mode="wait">
+        {isMenuOpen && (
+          <motion.div
+            key="mobile-menu"
+            ref={menuRef}
+            className="md:hidden overflow-hidden bg-background border-b"
+            initial="closed"
+            animate="open"
+            exit="closed"
+            variants={menuVariants}
+          >
+            <motion.nav className="flex flex-col py-6 px-6 space-y-6">
+              {menuItems.map((item, i) => (
+                <motion.div key={item.href} custom={i} variants={itemVariants}>
+                  <Link
+                    href={item.href}
+                    className="text-base font-medium transition-colors hover:text-primary block py-2"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {item.label}
+                  </Link>
+                </motion.div>
+              ))}
+
+              <motion.div custom={menuItems.length} variants={itemVariants}>
+                <div className="pt-4 border-t">
+                  {user ? (
+                    <Link href="/subscriptions" onClick={() => setIsMenuOpen(false)}>
+                      <Button variant="outline" className="w-full mb-3">
+                        Dashboard
+                      </Button>
+                    </Link>
+                  ) : (
+                    <div className="flex flex-col gap-3">
+                      <Link href="/login" onClick={() => setIsMenuOpen(false)}>
+                        <Button variant="outline" className="w-full">
+                          Login
+                        </Button>
+                      </Link>
+                      <Link href="/signup" onClick={() => setIsMenuOpen(false)}>
+                        <Button className="w-full">Sign Up Free</Button>
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            </motion.nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
-  );
+  )
 }
