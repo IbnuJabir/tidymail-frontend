@@ -28,6 +28,7 @@ import bonson from "@/assets/bonson.jpg";
 import mensur from "@/assets/mensur.jpg";
 import esmael from "@/assets/esmael.jpg";
 import { ModeToggle } from "@/components/toogle-theme";
+import logo from "@/assets/logo.png";
 
 export default function HomePage() {
   const { data: user } = useUser();
@@ -37,7 +38,13 @@ export default function HomePage() {
       <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <Mail className="h-6 w-6 text-primary" />
+            <Image
+              src={logo}
+              alt="TidyMail Logo"
+              className="h-8 w-8 rounded-full"
+              width={32}
+              height={32}
+            />
             <span className="text-xl font-bold">TidyMail</span>
           </Link>
           <nav className="hidden gap-6 md:flex">
@@ -654,7 +661,13 @@ export default function HomePage() {
           <div className="grid gap-8 md:grid-cols-4">
             <div>
               <Link href="/" className="flex items-center gap-2">
-                <Mail className="h-6 w-6 text-primary" />
+                <Image
+                  src={logo}
+                  alt="TidyMail Logo"
+                  className="h-8 w-8 rounded-full"
+                  width={32}
+                  height={32}
+                />
                 <span className="text-xl font-bold">TidyMail</span>
               </Link>
               <p className="mt-4 text-sm text-muted-foreground">
