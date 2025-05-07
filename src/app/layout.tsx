@@ -9,6 +9,8 @@ import "@/app/globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import Header from "@/components/layout/header";
+import Footer from "@/components/layout/footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -46,7 +48,9 @@ export default function RootLayout({
               enableSystem
               disableTransitionOnChange
             >
+              <Header />
               {children}
+              <Footer />
               <Toaster />
             </ThemeProvider>
           </NuqsAdapter>
