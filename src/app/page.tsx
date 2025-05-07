@@ -521,7 +521,7 @@ export default function HomePage() {
                 <CardContent>
                   <div className="flex mb-2">
                     {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-4 w-4 text-yellow-400" />
+                      <Star key={i} className="h-4 w-4 text-yellow-400 bg-yellow-400" />
                     ))}
                   </div>
                   <p className="text-muted-foreground">
