@@ -1,44 +1,62 @@
-"use client"
-import Link from "next/link"
-import Image from "next/image"
-import { Button } from "@/components/ui/button"
-import { ModeToggle } from "@/components/toogle-theme"
-import { useUser } from "@/hooks/useAuth"
-import { useState, useRef, useEffect } from "react"
-import { Menu, X } from "lucide-react"
-import { AnimatePresence, motion } from "framer-motion"
+"use client";
+import Link from "next/link";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { ModeToggle } from "@/components/toogle-theme";
+import { useUser } from "@/hooks/useAuth";
+import { useState, useRef, useEffect } from "react";
+import { Menu, X } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 import logo from "@/assets/logo.png";
 
 export default function Header() {
-  const { data: user } = useUser()
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const menuRef = useRef<HTMLDivElement>(null)
+  const { data: user } = useUser();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   // Close menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node) && isMenuOpen) {
-        setIsMenuOpen(false)
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target as Node) &&
+        isMenuOpen
+      ) {
+        setIsMenuOpen(false);
       }
-    }
+    };
 
-    document.addEventListener("mousedown", handleClickOutside)
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [isMenuOpen])
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isMenuOpen]);
+
+  // Handle ESC key to close menu
+  useEffect(() => {
+    const handleEscKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && isMenuOpen) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("keydown", handleEscKey);
+    return () => {
+      document.removeEventListener("keydown", handleEscKey);
+    };
+  }, [isMenuOpen]);
 
   // Prevent scrolling when menu is open
   useEffect(() => {
     if (isMenuOpen) {
-      document.body.style.overflow = "hidden"
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = ""
+      document.body.style.overflow = "";
     }
     return () => {
-      document.body.style.overflow = ""
-    }
-  }, [isMenuOpen])
+      document.body.style.overflow = "";
+    };
+  }, [isMenuOpen]);
 
   const menuVariants = {
     closed: {
@@ -57,7 +75,7 @@ export default function Header() {
         ease: [0.4, 0.0, 0.2, 1],
       },
     },
-  }
+  };
 
   const itemVariants = {
     closed: { opacity: 0, y: -10 },
@@ -69,7 +87,7 @@ export default function Header() {
         duration: 0.3,
       },
     }),
-  }
+  };
 
   const menuItems = [
     { href: "/#features", label: "Features" },
@@ -78,20 +96,30 @@ export default function Header() {
     { href: "/#about", label: "About" },
     { href: "/#pricing", label: "Pricing" },
     { href: "/#contact", label: "Contact" },
-  ]
+  ];
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
-          <Image src={logo} alt="TidyMail Logo" className="h-8 w-8 rounded-full" width={32} height={32} />
+          <Image
+            src={logo}
+            alt="TidyMail Logo"
+            className="h-8 w-8 rounded-full"
+            width={32}
+            height={32}
+          />
           <span className="text-xl font-bold">TidyMail</span>
         </Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden gap-6 md:flex">
           {menuItems.map((item) => (
-            <Link key={item.href} href={item.href} className="text-sm font-medium transition-colors hover:text-primary">
+            <Link
+              key={item.href}
+              href={item.href}
+              className="text-sm font-medium transition-colors hover:text-primary"
+            >
               {item.label}
             </Link>
           ))}
@@ -115,35 +143,23 @@ export default function Header() {
           <ModeToggle />
 
           {/* Mobile menu button */}
-          <button
-            className="md:hidden flex items-center justify-center h-10 w-10 rounded-full hover:bg-muted transition-colors z-50"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-          >
-            <AnimatePresence mode="wait">
-              {isMenuOpen ? (
-                <motion.div
-                  key="close"
-                  initial={{ rotate: -90, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: 90, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <X className="h-6 w-6" />
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="menu"
-                  initial={{ rotate: 90, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: -90, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <Menu className="h-6 w-6" />
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </button>
+          {isMenuOpen ? (
+            <button
+              className="md:hidden flex items-center justify-center h-10 w-10 rounded-full hover:bg-muted transition-colors z-50"
+              onClick={() => setIsMenuOpen(false)}
+              aria-label="Close menu"
+            >
+              <X className="h-6 w-6" />
+            </button>
+          ) : (
+            <button
+              className="md:hidden flex items-center justify-center h-10 w-10 rounded-full hover:bg-muted transition-colors z-50"
+              onClick={() => setIsMenuOpen(true)}
+              aria-label="Open menu"
+            >
+              <Menu className="h-6 w-6" />
+            </button>
+          )}
         </div>
       </div>
 
@@ -175,7 +191,10 @@ export default function Header() {
               <motion.div custom={menuItems.length} variants={itemVariants}>
                 <div className="pt-4 border-t">
                   {user ? (
-                    <Link href="/subscriptions" onClick={() => setIsMenuOpen(false)}>
+                    <Link
+                      href="/subscriptions"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
                       <Button variant="outline" className="w-full mb-3">
                         Dashboard
                       </Button>
@@ -199,5 +218,5 @@ export default function Header() {
         )}
       </AnimatePresence>
     </header>
-  )
+  );
 }
