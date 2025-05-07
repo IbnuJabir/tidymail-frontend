@@ -70,7 +70,7 @@ export default function PricingSection() {
       });
     } catch (error) {
       toast.error("Something went wrong", {
-        description: "Please try again later.",
+        description: `${error}Please try again later.`,
       });
     } finally {
       setIsSubmitting(false);
@@ -85,15 +85,14 @@ export default function PricingSection() {
             Simple, Transparent Pricing
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Choose the plan that's right for you. All plans include a 14-day
-            free trial.
+            Choose the plan that&apos;s right for you.
           </p>
 
           <div className="flex items-center justify-center mt-8">
             <Label
               htmlFor="billing-toggle"
-              className={`mr-2 ${
-                !isYearly ? "font-medium" : "text-muted-foreground"
+              className={`mr-2 text-xl ${
+                !isYearly ? "font-medium" : "text-muted-foreground cursor-pointer"
               }`}
             >
               Monthly
@@ -102,11 +101,12 @@ export default function PricingSection() {
               id="billing-toggle"
               checked={isYearly}
               onCheckedChange={setIsYearly}
+              className="text-9xlxl"
             />
             <Label
               htmlFor="billing-toggle"
-              className={`ml-2 ${
-                isYearly ? "font-medium" : "text-muted-foreground"
+              className={`ml-2 text-xl ${
+                isYearly ? "font-medium" : "text-muted-foreground cursor-pointer"
               }`}
             >
               Yearly{" "}

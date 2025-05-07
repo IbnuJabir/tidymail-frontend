@@ -44,7 +44,7 @@ export default function ContactSection() {
       });
     } catch (error) {
       toast.error("Something went wrong", {
-        description: "Please try again later.",
+        description: `${error}Please try again later.`,
       });
     } finally {
       setIsSubmitting(false);
@@ -59,31 +59,31 @@ export default function ContactSection() {
             Get in Touch
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Have questions or feedback? We'd love to hear from you.
+            Have questions or feedback? We&apos;d love to hear from you.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6">
-              <h3 className="text-2xl font-bold mb-6">Contact Information</h3>
-              <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                  <Mail className="h-5 w-5 text-primary" />
-                </div>
-                <div>
-                  <h4 className="font-medium">Email Us</h4>
-                  <p className="text-muted-foreground mt-1">
-                    Our friendly team is here to help.
-                  </p>
-                  <a
-                    href="mailto:tidymailsupport@ibnujabir.tech"
-                    className="text-primary hover:underline mt-1 block"
-                  >
-                    tidymailsupport@ibnujabir.tech
-                  </a>
-                </div>
+        <div className="grid md:grid-cols-2 gap-8 items-center">
+          <div className="space-y-6">
+            <h3 className="text-2xl font-bold mb-6">Contact Information</h3>
+            <div className="flex items-start gap-4">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                <Mail className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <h4 className="font-medium">Email Us</h4>
+                <p className="text-muted-foreground mt-1">
+                  Our friendly team is here to help.
+                </p>
+                <a
+                  href="mailto:tidymailsupport@ibnujabir.tech"
+                  className="text-primary hover:underline mt-1 block"
+                >
+                  tidymailsupport@ibnujabir.tech
+                </a>
               </div>
             </div>
+          </div>
 
           <div className="bg-muted/30 p-8 rounded-xl">
             <h3 className="text-2xl font-bold mb-6">Send us a message</h3>

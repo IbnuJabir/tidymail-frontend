@@ -1,6 +1,4 @@
 "use client"
-import Header from "@/components/layout/header"
-import Footer from "@/components/layout/footer"
 import HeroSection from "@/components/home/hero-section"
 import StatsSection from "@/components/home/stats-section"
 import FeaturesSection from "@/components/home/features-section"

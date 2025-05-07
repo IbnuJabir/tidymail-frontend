@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { ArrowLeft, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function TermsAndPrivacyPage() {
@@ -166,7 +166,7 @@ export default function TermsAndPrivacyPage() {
 
               <h3>6. Disclaimer of Warranties</h3>
               <p>
-                The Service is provided on an "AS IS" and "AS AVAILABLE" basis.
+                The Service is provided on an &ldquo;AS IS&rdquo; and &ldquo;AS AVAILABLE&rdquo; basis.
                 We disclaim all warranties of any kind, whether express or
                 implied, including, but not limited to, implied warranties of
                 merchantability, fitness for a particular purpose, and
@@ -239,7 +239,7 @@ export default function TermsAndPrivacyPage() {
                 <li>The content (body) of your emails.</li>
                 <li>Attachments in your emails.</li>
                 <li>
-                  Recipient information (To, Cc, Bcc fields) unless it's the
+                  Recipient information (To, Cc, Bcc fields) unless it&apos;s the
                   sender address itself being analyzed for subscription
                   purposes.
                 </li>
@@ -307,7 +307,7 @@ export default function TermsAndPrivacyPage() {
                 use of information.
               </p>
 
-              <h3>6. Children's Privacy</h3>
+              <h3>6. Children&apos;s Privacy</h3>
               <p>
                 Our Service is not intended for use by children under the age of
                 13. We do not knowingly collect personal information from
@@ -318,7 +318,7 @@ export default function TermsAndPrivacyPage() {
               <p>
                 We may update our Privacy Policy from time to time. We will
                 notify you of any changes by posting the new Privacy Policy on
-                this page and updating the "Last Updated" date. You are advised
+                this page and updating the &ldquo;Last Updated&rdquo; date. You are advised
                 to review this Privacy Policy periodically for any changes.
               </p>
 

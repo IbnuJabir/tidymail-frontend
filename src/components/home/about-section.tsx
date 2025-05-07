@@ -9,7 +9,7 @@ export default function AboutSection() {
             About TidyMail
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            We're on a mission to help people regain control of their inboxes
+            We&apos;re on a mission to help people regain control of their inboxes
             and reduce digital clutter.
           </p>
         </div>
@@ -74,7 +74,7 @@ export default function AboutSection() {
                   Continuous Innovation
                 </h4>
                 <p className="text-muted-foreground">
-                  We're constantly improving our platform based on user feedback
+                  We&apos;re constantly improving our platform based on user feedback
                   and emerging technologies.
                 </p>
               </div>
