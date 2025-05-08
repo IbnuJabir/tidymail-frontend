@@ -3,6 +3,7 @@ export interface User {
     id: number;
     email: string;
     name: string;
+    profile_image: string;
     google_id: string;
     is_active: boolean;
     created_at: string;
