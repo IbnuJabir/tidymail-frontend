@@ -3,6 +3,7 @@
 import * as React from "react";
 import {
   AudioWaveform,
+  Home,
   UserX,
 } from "lucide-react";
 import { UserRound } from "lucide-react";
@@ -31,11 +32,11 @@ const data = {
   ],
 };
 const routes = [
-  // {
-  //   title: "Dashboard",
-  //   icon: Home,
-  //   href: "/",
-  // },
+  {
+    title: "Dashboard",
+    icon: Home,
+    href: "/dashboard",
+  },
   // {
   //   title: "Emails",
   //   icon: Mail,

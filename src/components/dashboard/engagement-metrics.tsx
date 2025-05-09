@@ -1,0 +1,70 @@
+import type React from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Progress } from "@/components/ui/progress"
+import { Eye, MousePointer, Reply } from "lucide-react"
+
+interface EngagementMetricsProps {
+  metrics: {
+    openRate: number
+    clickRate: number
+    responseRate: number
+  }
+}
+
+export function EngagementMetrics({ metrics }: EngagementMetricsProps) {
+  const formatPercentage = (value: number) => `${(value * 100).toFixed(1)}%`
+
+  const metrics_data = [
+    {
+      title: "Open Rate",
+      value: metrics.openRate,
+      icon: <Eye className="h-4 w-4" />,
+      description: "Percentage of emails opened",
+      color: "var(--blue-500, hsl(217, 91%, 60%))",
+    },
+    {
+      title: "Click Rate",
+      value: metrics.clickRate,
+      icon: <MousePointer className="h-4 w-4" />,
+      description: "Percentage of emails clicked",
+      color: "var(--purple-500, hsl(259, 94%, 61%))",
+    },
+    {
+      title: "Response Rate",
+      value: metrics.responseRate,
+      icon: <Reply className="h-4 w-4" />,
+      description: "Percentage of emails responded to",
+      color: "var(--emerald-500, hsl(152, 76%, 44%))",
+    },
+  ]
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Engagement Metrics</CardTitle>
+        <CardDescription>How you interact with your subscriptions</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-6">
+          {metrics_data.map((metric) => (
+            <div key={metric.title} className="space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  {metric.icon}
+                  <span className="text-sm font-medium">{metric.title}</span>
+                </div>
+                <span className="text-sm font-medium">{formatPercentage(metric.value)}</span>
+              </div>
+              <Progress
+                value={metric.value * 100}
+                className="h-2"
+                style={{ "--progress-foreground": metric.color } as React.CSSProperties}
+              />
+              <p className="text-xs text-muted-foreground">{metric.description}</p>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  )
+}

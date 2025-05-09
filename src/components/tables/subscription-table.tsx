@@ -36,6 +36,7 @@ import {
   Loader2,
   Mail,
   MoreHorizontal,
+  RefreshCcw,
   Search,
   Trash,
   Trash2,
@@ -45,6 +46,7 @@ import { parseAsInteger, parseAsString, useQueryState } from "nuqs";
 import * as React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
+  analyzeSubscriptionBatch,
   bulkDelete,
   bulkTrash,
   getSubscriptions,
@@ -622,6 +624,14 @@ export function SubscriptionTable() {
           </div>
         </form>
         <div className="flex flex-wrap gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => analyzeSubscriptionBatch()}
+          >
+            <RefreshCcw className="mr-2 h-4 w-4" />
+            <span className="hidden sm:inline">Sync</span>
+          </Button>
           <Button
             variant="outline"
             size="sm"

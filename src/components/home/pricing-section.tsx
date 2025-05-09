@@ -27,6 +27,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { Subscribe } from "../../../server/polar";
 
 export default function PricingSection() {
   const [isYearly, setIsYearly] = useState(false);
@@ -186,7 +187,7 @@ export default function PricingSection() {
               <div className="mt-4 flex items-baseline text-5xl font-extrabold">
                 ${isYearly ? "4.99" : "6.99"}
                 <span className="ml-1 text-xl font-medium text-muted-foreground">
-                  /{isYearly ? "year" : "month"}
+                  /month
                 </span>
               </div>
               {isYearly && (
@@ -228,9 +229,9 @@ export default function PricingSection() {
               </ul>
             </CardContent>
             <CardFooter>
-              <Link href="/signup" className="w-full">
-                <Button className="w-full">Get Started</Button>
-              </Link>
+              {/* <Link href="/signup" className="w-full">
+              </Link> */}
+                <Button className="w-full" onClick={()=>Subscribe()}>Get Started</Button>
             </CardFooter>
           </Card>
 
@@ -244,7 +245,7 @@ export default function PricingSection() {
               <div className="mt-4 flex items-baseline text-5xl font-extrabold">
                 ${isYearly ? "14.99" : "19.99"}
                 <span className="ml-1 text-xl font-medium text-muted-foreground">
-                  /{isYearly ? "year" : "month"}
+                 /month
                 </span>
               </div>
               {isYearly && (

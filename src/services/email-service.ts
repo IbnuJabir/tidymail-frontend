@@ -1,4 +1,5 @@
 import api from "@/lib/api";
+import { EmailAnalyticsResponse } from "@/types/dashboard";
 import type {
   Email,
   SubscriptionResponse,
@@ -238,5 +239,15 @@ export async function subscribeBack(email: string) {
   } catch (error) {
     console.error("Error resubscribing:", error);
     throw error;
+  }
+}
+
+export async function fetchEmailAnalytics(): Promise<EmailAnalyticsResponse> {
+  try {
+    const response = await api.get<EmailAnalyticsResponse>('/analytics')
+    return response.data
+  } catch (error) {
+    console.error("Error fetching email analytics:", error)
+    throw new Error("Failed to fetch email analytics data")
   }
 }
