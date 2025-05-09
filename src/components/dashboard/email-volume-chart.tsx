@@ -20,20 +20,35 @@ export function EmailVolumeChart({ data }: EmailVolumeChartProps) {
     date: new Date(item.date).toLocaleDateString("en-US", { month: "short", day: "numeric" }),
   }))
 
+  // If there's only one data point in any category, duplicate it to show a line
+  const processData = (dataArray: any[], keyName: string) => {
+    if (dataArray.length === 1) {
+      return [
+        { ...dataArray[0], [keyName]: `${dataArray[0][keyName]} (Start)` },
+        { ...dataArray[0], [keyName]: `${dataArray[0][keyName]} (End)` },
+      ]
+    }
+    return dataArray
+  }
+
+  const dailyData = processData(formattedDaily, "date")
+  const weeklyData = processData(data.weekly, "week")
+  const monthlyData = processData(data.monthly, "month")
+
   return (
-    <Card>
+    <Card className="shadow-sm overflow-hidden">
       <CardHeader>
         <CardTitle>Email Volume</CardTitle>
         <CardDescription>Number of emails received over time</CardDescription>
       </CardHeader>
-      <CardContent>
-        <Tabs defaultValue="daily">
+      <CardContent className="p-0 pt-4">
+        <Tabs defaultValue="daily" className="px-6">
           <TabsList className="mb-4">
             <TabsTrigger value="daily">Daily</TabsTrigger>
             <TabsTrigger value="weekly">Weekly</TabsTrigger>
             <TabsTrigger value="monthly">Monthly</TabsTrigger>
           </TabsList>
-          <div className="h-[300px]">
+          <div className="h-[350px] w-full overflow-hidden">
             <ChartContainer
               config={{
                 count: {
@@ -41,14 +56,15 @@ export function EmailVolumeChart({ data }: EmailVolumeChartProps) {
                   color: "hsl(var(--chart-6))",
                 },
               }}
+              className="h-full w-full"
             >
-              <div className="h-full">
-                <TabsContent value="daily" className="h-full">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={formattedDaily} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+              <div className="h-full w-full">
+                <TabsContent value="daily" className="h-full mt-0">
+                  <ResponsiveContainer width="99%" height="99%">
+                    <LineChart data={dailyData} margin={{ top: 20, right: 20, left: 20, bottom: 20 }}>
                       <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="date" />
-                      <YAxis />
+                      <XAxis dataKey="date" tick={{ fontSize: 12 }} height={40} />
+                      <YAxis width={40} tick={{ fontSize: 12 }} />
                       <ChartTooltip content={<ChartTooltipContent />} />
                       <Line
                         type="monotone"
@@ -61,12 +77,12 @@ export function EmailVolumeChart({ data }: EmailVolumeChartProps) {
                     </LineChart>
                   </ResponsiveContainer>
                 </TabsContent>
-                <TabsContent value="weekly" className="h-full">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={data.weekly} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                <TabsContent value="weekly" className="h-full mt-0">
+                  <ResponsiveContainer width="99%" height="99%">
+                    <LineChart data={weeklyData} margin={{ top: 20, right: 20, left: 20, bottom: 20 }}>
                       <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="week" />
-                      <YAxis />
+                      <XAxis dataKey="week" tick={{ fontSize: 12 }} height={40} />
+                      <YAxis width={40} tick={{ fontSize: 12 }} />
                       <ChartTooltip content={<ChartTooltipContent />} />
                       <Line
                         type="monotone"
@@ -79,12 +95,12 @@ export function EmailVolumeChart({ data }: EmailVolumeChartProps) {
                     </LineChart>
                   </ResponsiveContainer>
                 </TabsContent>
-                <TabsContent value="monthly" className="h-full">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={data.monthly} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                <TabsContent value="monthly" className="h-full mt-0">
+                  <ResponsiveContainer width="99%" height="99%">
+                    <LineChart data={monthlyData} margin={{ top: 20, right: 20, left: 20, bottom: 20 }}>
                       <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="month" />
-                      <YAxis />
+                      <XAxis dataKey="month" tick={{ fontSize: 12 }} height={40} />
+                      <YAxis width={40} tick={{ fontSize: 12 }} />
                       <ChartTooltip content={<ChartTooltipContent />} />
                       <Line
                         type="monotone"

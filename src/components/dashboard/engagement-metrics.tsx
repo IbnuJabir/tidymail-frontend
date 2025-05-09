@@ -1,7 +1,8 @@
 import type React from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
-import { Eye, MousePointer, Reply } from "lucide-react"
+import { Eye, MousePointer, Reply, AlertCircle } from "lucide-react"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 
 interface EngagementMetricsProps {
   metrics: {
@@ -13,6 +14,8 @@ interface EngagementMetricsProps {
 
 export function EngagementMetrics({ metrics }: EngagementMetricsProps) {
   const formatPercentage = (value: number) => `${(value * 100).toFixed(1)}%`
+
+  const hasEngagementData = metrics.openRate > 0 || metrics.clickRate > 0 || metrics.responseRate > 0
 
   const metrics_data = [
     {
@@ -39,31 +42,40 @@ export function EngagementMetrics({ metrics }: EngagementMetricsProps) {
   ]
 
   return (
-    <Card>
+    <Card className="shadow-sm">
       <CardHeader>
         <CardTitle>Engagement Metrics</CardTitle>
         <CardDescription>How you interact with your subscriptions</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="space-y-6">
-          {metrics_data.map((metric) => (
-            <div key={metric.title} className="space-y-2">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  {metric.icon}
-                  <span className="text-sm font-medium">{metric.title}</span>
+        {!hasEngagementData ? (
+          <Alert className="bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800">
+            <AlertCircle className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+            <AlertDescription className="text-blue-600 dark:text-blue-400">
+              No engagement data is available yet. This will be populated as you interact with your emails.
+            </AlertDescription>
+          </Alert>
+        ) : (
+          <div className="space-y-6">
+            {metrics_data.map((metric) => (
+              <div key={metric.title} className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    {metric.icon}
+                    <span className="text-sm font-medium">{metric.title}</span>
+                  </div>
+                  <span className="text-sm font-medium">{formatPercentage(metric.value)}</span>
                 </div>
-                <span className="text-sm font-medium">{formatPercentage(metric.value)}</span>
+                <Progress
+                  value={metric.value * 100}
+                  className="h-2"
+                  style={{ "--progress-foreground": metric.color } as React.CSSProperties}
+                />
+                <p className="text-xs text-muted-foreground">{metric.description}</p>
               </div>
-              <Progress
-                value={metric.value * 100}
-                className="h-2"
-                style={{ "--progress-foreground": metric.color } as React.CSSProperties}
-              />
-              <p className="text-xs text-muted-foreground">{metric.description}</p>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </CardContent>
     </Card>
   )

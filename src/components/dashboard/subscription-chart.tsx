@@ -19,7 +19,7 @@ interface SubscriptionChartProps {
   data: Array<{
     name: string;
     count: number;
-    category: string;
+    category: string | null;
   }>;
 }
 
@@ -106,22 +106,25 @@ export function SubscriptionChart({ data }: SubscriptionChartProps) {
     setActiveIndex(index);
   };
 
+  // Calculate total for percentage
+  const total = data.reduce((sum, item) => sum + item.count, 0);
+
   return (
-    <Card className="col-span-1 lg:col-span-2">
+    <Card className="col-span-1 lg:col-span-2 shadow-sm">
       <CardHeader>
         <CardTitle>Top Subscriptions by Email Count</CardTitle>
         <CardDescription>Your most active email subscriptions</CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer
-          config={{
-            count: {
-              label: "subscriptions",
-              color: "hsl(var(--chart-6))",
-            },
-          }}
-        >
-          <div className="h-[300px]">
+        <div className="h-[350px] flex items-center justify-center">
+          <ChartContainer
+            config={{
+              count: {
+                label: "Emails",
+                color: "hsl(var(--chart-1))",
+              },
+            }}
+          >
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -130,8 +133,9 @@ export function SubscriptionChart({ data }: SubscriptionChartProps) {
                   data={data}
                   cx="50%"
                   cy="50%"
-                  innerRadius={60}
-                  outerRadius={80}
+                  innerRadius={80}
+                  outerRadius={120}
+                  paddingAngle={2}
                   fill="#8884d8"
                   dataKey="count"
                   onMouseEnter={onPieEnter}
@@ -146,16 +150,29 @@ export function SubscriptionChart({ data }: SubscriptionChartProps) {
                 <ChartTooltip content={<ChartTooltipContent />} />
               </PieChart>
             </ResponsiveContainer>
-          </div>
-        </ChartContainer>
-        <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-5">
+          </ChartContainer>
+        </div>
+        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-5">
           {data.map((item, index) => (
-            <div key={item.name} className="flex items-center">
+            <div
+              key={item.name}
+              className="flex items-center space-x-2 bg-gray-50 dark:bg-gray-800/50 p-2 rounded-md"
+            >
               <div
-                className="mr-2 h-3 w-3 rounded-full"
+                className="h-4 w-4 rounded-full"
                 style={{ backgroundColor: COLORS[index % COLORS.length] }}
               />
-              <span className="text-xs font-medium">{item.name}</span>
+              <div className="flex flex-col">
+                <span
+                  className="text-xs font-medium truncate max-w-[120px]"
+                  title={item.name}
+                >
+                  {item.name}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  {((item.count / total) * 100).toFixed(1)}% ({item.count})
+                </span>
+              </div>
             </div>
           ))}
         </div>

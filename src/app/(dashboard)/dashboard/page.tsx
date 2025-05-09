@@ -48,7 +48,7 @@ export default function DashboardPage() {
           <AlertDescription>
             Failed to load analytics data. {error instanceof Error ? error.message : "Please try again later."}
           </AlertDescription>
-          <Button variant="outline" size="sm" className="mt-4 w-full" onClick={() => refetch()}>
+          <Button variant="outline" size="sm" className="mt-4" onClick={() => refetch()}>
             <RefreshCw className="mr-2 h-4 w-4" />
             Retry
           </Button>
@@ -57,20 +57,8 @@ export default function DashboardPage() {
     )
   }
 
-  if(!data) {
-    return (
-      <div className="container mx-auto py-6">
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Error</AlertTitle>
-          <AlertDescription>Data not found. Please try again later.</AlertDescription>
-        </Alert>
-      </div>
-    )
-  }
-
   return (
-    <div className="container mx-auto py-6 space-y-6">
+    <div className="container mx-auto py-6 space-y-8">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Dashboard Analytics</h1>
         <Button variant="outline" size="sm" onClick={() => refetch()}>
@@ -81,15 +69,19 @@ export default function DashboardPage() {
 
       <StatsCards stats={data.stats} />
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-6 md:grid-cols-2">
         <SubscriptionChart data={data.topSubscriptions} />
-        <EngagementMetrics metrics={data.engagementMetrics} />
+        <div className="flex flex-col gap-6">
+          <EngagementMetrics metrics={data.engagementMetrics} />
+          <CategoryChart data={data.categoryBreakdown} />
+        </div>
       </div>
 
-      {/* <ActivityChart data={data.activityTimeline} /> */}
+      <div className="w-full">
+        <ActivityChart data={data.activityTimeline} />
+      </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <CategoryChart data={data.categoryBreakdown} />
+      <div className="w-full">
         <EmailVolumeChart data={data.emailVolume} />
       </div>
     </div>
