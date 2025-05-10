@@ -132,7 +132,7 @@ export function TermsOfService() {
               </h2>
               <div className="ml-11">
                 <ul className="list-disc pl-5 space-y-2 text-muted-foreground">
-                  <li>The service is provided "AS IS" and "AS AVAILABLE"</li>
+                  <li>The service is provided &ldquo;AS IS&rdquo; and &ldquo;AS AVAILABLE&rdquo;</li>
                   <li>We disclaim all warranties, express or implied</li>
                   <li>
                     We are not liable for indirect, incidental, special, consequential, or punitive damages resulting

@@ -38,7 +38,7 @@ export function PrivacyPolicy() {
                 Information We Collect
               </h2>
               <div className="ml-9">
-                <p className="mb-4">We collect only what's necessary to provide our service:</p>
+                <p className="mb-4">We collect only what&apos;s necessary to provide our service:</p>
                 <div className="space-y-4">
                   <div className="bg-muted/50 p-4 rounded-lg">
                     <h3 className="font-medium mb-2">✓ Subscription Metadata</h3>
@@ -69,7 +69,7 @@ export function PrivacyPolicy() {
                     <li>The content (body) of your emails</li>
                     <li>Attachments in your emails</li>
                     <li>Recipient information (To, Cc, Bcc fields)</li>
-                    <li>Any personal information beyond what's necessary for the service</li>
+                    <li>Any personal information beyond what&apos;s necessary for the service</li>
                   </ul>
                 </div>
               </div>
@@ -131,7 +131,7 @@ export function PrivacyPolicy() {
                       tidymailsupport@ibnujabir.tech
                     </Link>
                   </li>
-                  <li>Upon request, we'll permanently delete your data within a reasonable timeframe</li>
+                  <li>Upon request, we&apos;ll permanently delete your data within a reasonable timeframe</li>
                 </ul>
               </div>
             </section>
@@ -155,7 +155,7 @@ export function PrivacyPolicy() {
             <section className="space-y-4">
               <h2 className="text-2xl font-bold flex items-center">
                 <Child className="text-primary mr-3 h-6 w-6" />
-                Children's Privacy
+                Children&apos;s Privacy
               </h2>
               <div className="ml-9">
                 <ul className="list-disc pl-5 space-y-2 text-muted-foreground">
@@ -174,7 +174,7 @@ export function PrivacyPolicy() {
               <div className="ml-9">
                 <ul className="list-disc pl-5 space-y-2 text-muted-foreground">
                   <li>We may update our Privacy Policy periodically</li>
-                  <li>We'll notify you of any changes by posting the new policy</li>
+                  <li>We&apos;ll notify you of any changes by posting the new policy</li>
                   <li>We recommend reviewing this policy regularly</li>
                 </ul>
               </div>

@@ -18,6 +18,10 @@ export default function SuccessCard() {
     }, 5000)
 
     const interval = setInterval(() => {
+      if (countdown <= 0) {
+        clearInterval(interval)
+        return
+      }
       setCountdown((prev) => prev - 1)
     }, 1000)
 

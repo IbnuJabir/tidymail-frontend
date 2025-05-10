@@ -4,14 +4,14 @@ import type React from "react"
 import { Button } from "@/components/ui/button"
 import { FcGoogle } from "react-icons/fc"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Mail, Sparkles } from "lucide-react"
+import { Sparkles } from "lucide-react"
 import Image from "next/image"
 import logo from "@/assets/logo.png"
 
-export function LoginForm({ className }: React.ComponentProps<"div">) {
+export function LoginForm() {
   const handleGoogleLogin = () => {
     // Redirect to backend Google OAuth endpoint
-    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/login`
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/login?subscription=pro`
   }
 
   return (
