@@ -56,7 +56,21 @@ export default function DashboardPage() {
       </div>
     )
   }
-
+  if(!data) {
+    return (
+      <div className="container mx-auto py-6">
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>Failed to load analytics data. Please try again later.</AlertDescription>
+          <Button variant="outline" size="sm" className="mt-4" onClick={() => refetch()}>
+            <RefreshCw className="mr-2 h-4 w-4" />
+            Retry
+          </Button>
+        </Alert>
+      </div>
+    )
+  }
   return (
     <div className="container mx-auto py-6 space-y-8">
       <div className="flex items-center justify-between">
