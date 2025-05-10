@@ -14,7 +14,7 @@ import ContactSection from "@/components/home/contact-section";
 
 export default function HomePage() {
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col overflow-x-hidden">
       <Header />
 
       <main className="flex-1">
