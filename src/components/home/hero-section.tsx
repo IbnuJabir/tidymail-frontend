@@ -35,11 +35,11 @@ export default function HeroSection() {
           </Link>
         </div>
         <div className="mt-16 w-full max-w-5xl overflow-hidden rounded-xl border bg-background shadow-xl">
-          <div className="relative w-[85%] overflow-hidden bg-muted">
+          <div className="relative w-full h-full aspect-[16/9] overflow-hidden bg-muted">
             <Image
               src={dashboard}
               alt="TidyMail Dashboard"
-              className="h-full w-full object-contain"
+              className="h-full  object-fill"
               width={1280}
               height={680}
             />
