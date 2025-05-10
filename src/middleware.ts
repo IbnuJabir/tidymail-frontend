@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 // Define protected and public routes
 const protectedRoutes = ['/subscriptions', '/unsubscribed', '/emails']
-const publicRoutes = ['/login', '/signup']
+const publicRoutes = ['/login']
 
 export async function middleware(req: NextRequest) {
   // Get the pathname of the request

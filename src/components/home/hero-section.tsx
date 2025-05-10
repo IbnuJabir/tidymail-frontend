@@ -23,7 +23,7 @@ export default function HeroSection() {
           experience.
         </p>
         <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-          <Link href="/signup">
+          <Link href="/login">
             <Button size="lg" className="gap-2">
               Get Started Free <ArrowRight className="h-4 w-4" />
             </Button>
@@ -35,11 +35,11 @@ export default function HeroSection() {
           </Link>
         </div>
         <div className="mt-16 w-full max-w-5xl overflow-hidden rounded-xl border bg-background shadow-xl">
-          <div className="relative aspect-[16/9] overflow-hidden bg-muted">
+          <div className="relative w-[85%] overflow-hidden bg-muted">
             <Image
               src={dashboard}
               alt="TidyMail Dashboard"
-              className="h-full w-full object-cover"
+              className="h-full w-full object-contain"
               width={1280}
               height={680}
             />

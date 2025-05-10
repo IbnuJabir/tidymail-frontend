@@ -13,18 +13,9 @@ export default function CTASection() {
             today.
           </p>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-            <Link href="/signup">
+            <Link href="/login">
               <Button size="lg" variant="secondary" className="gap-2">
                 Get Started Free <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
-            <Link href="/login">
-              <Button
-                size="lg"
-                variant="outline"
-                className="bg-transparent text-primary-foreground border-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
-              >
-                Login
               </Button>
             </Link>
           </div>

@@ -133,9 +133,6 @@ export default function Header() {
           ) : (
             <div className="hidden md:flex items-center gap-2">
               <Link href="/login">
-                <Button variant="outline">Login</Button>
-              </Link>
-              <Link href="/signup">
                 <Button>Sign Up Free</Button>
               </Link>
             </div>
@@ -202,11 +199,6 @@ export default function Header() {
                   ) : (
                     <div className="flex flex-col gap-3">
                       <Link href="/login" onClick={() => setIsMenuOpen(false)}>
-                        <Button variant="outline" className="w-full">
-                          Login
-                        </Button>
-                      </Link>
-                      <Link href="/signup" onClick={() => setIsMenuOpen(false)}>
                         <Button className="w-full">Sign Up Free</Button>
                       </Link>
                     </div>

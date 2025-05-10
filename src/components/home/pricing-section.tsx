@@ -166,7 +166,7 @@ export default function PricingSection() {
               </ul>
             </CardContent>
             <CardFooter>
-              <Link href="/signup" className="w-full">
+              <Link href="/login" className="w-full">
                 <Button variant="outline" className="w-full">
                   Get Started
                 </Button>
@@ -229,7 +229,7 @@ export default function PricingSection() {
               </ul>
             </CardContent>
             <CardFooter>
-              {/* <Link href="/signup" className="w-full">
+              {/* <Link href="/login" className="w-full">
               </Link> */}
                 <Button className="w-full" onClick={()=>Subscribe()}>Get Started</Button>
             </CardFooter>
@@ -291,7 +291,7 @@ export default function PricingSection() {
               </ul>
             </CardContent>
             <CardFooter>
-              <Link href="/signup" className="w-full">
+              <Link href="/login" className="w-full">
                 <Button variant="outline" className="w-full">
                   Get Started
                 </Button>

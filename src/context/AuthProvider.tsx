@@ -29,7 +29,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const pathname = usePathname();
   const { data: user, isLoading, error } = useUser();
   
-  const publicRoutes = ['/login', '/signup', '/', '/auth/callback'];
+  const publicRoutes = ['/login','/', '/auth/callback'];
   const isPublicRoute = publicRoutes.includes(pathname || '');
 
   useEffect(() => {
