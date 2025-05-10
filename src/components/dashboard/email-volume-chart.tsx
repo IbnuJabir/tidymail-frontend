@@ -12,6 +12,7 @@ interface EmailVolumeChartProps {
     monthly: Array<{ month: string; count: number }>
   }
 }
+type DataItem = { [key: string]: string | number }
 
 export function EmailVolumeChart({ data }: EmailVolumeChartProps) {
   // Format dates for better display
@@ -21,7 +22,7 @@ export function EmailVolumeChart({ data }: EmailVolumeChartProps) {
   }))
 
   // If there's only one data point in any category, duplicate it to show a line
-  const processData = (dataArray: any[], keyName: string) => {
+  const processData = (dataArray: DataItem[], keyName: string) => {
     if (dataArray.length === 1) {
       return [
         { ...dataArray[0], [keyName]: `${dataArray[0][keyName]} (Start)` },
