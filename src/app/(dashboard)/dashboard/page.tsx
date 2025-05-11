@@ -1,4 +1,4 @@
-
+"use client"
 
 import { useQuery } from "@tanstack/react-query"
 import { fetchEmailAnalytics } from "@/services/email-service"
@@ -12,12 +12,6 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AlertCircle, RefreshCw } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Metadata } from "next"
-
-export const metadata: Metadata = {
-  title: "Dashboard | TidyMail",
-  description: "Dashboard to manage your email subscriptions",
-}
 
 export default function DashboardPage() {
   const { data, isLoading, isError, error, refetch } = useQuery({
