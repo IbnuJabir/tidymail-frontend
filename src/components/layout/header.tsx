@@ -127,7 +127,7 @@ export default function Header() {
 
         <div className="flex items-center gap-4">
           {user ? (
-            <Link href="/subscriptions" className="hidden md:block">
+            <Link href="/dashboard" className="hidden md:block">
               <Button variant="outline">Dashboard</Button>
             </Link>
           ) : (
@@ -189,7 +189,7 @@ export default function Header() {
                 <div className="pt-4 border-t">
                   {user ? (
                     <Link
-                      href="/subscriptions"
+                      href="/dashboard"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       <Button variant="outline" className="w-full mb-3">
