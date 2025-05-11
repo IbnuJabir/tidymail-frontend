@@ -18,7 +18,7 @@ import {
 // import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useUser } from "@/hooks/useAuth";
-import logo from "@/assets/logo.png";
+import logo from "@/assets/logo-w.png";
 
 const routes = [
   {
