@@ -259,13 +259,11 @@ const checkout = async (plan_key: string): Promise<CheckoutResponse> => {
     const response = await api.post("/subscription-plan/checkout", {
       plan_key,
       success_url: "http://localhost:3000/payment/success",
-      cancel_url: "http://localhost:3000/payment/cancel",
     });
     return response.data;
-  } catch (error: any) {
-    throw new Error(
-      error?.response?.data?.detail || "Failed to create checkout session"
-    );
+  } catch (error) {
+    console.error("Error creating checkout session:", error);
+    throw new Error("Failed to create checkout session");
   }
 };
 
@@ -273,11 +271,10 @@ export const useCheckout = () => {
   return useMutation({
     mutationFn: checkout,
     onSuccess: (data) => {
-      console.log("Checkout Success:", data);
       window.location.href = data.checkout_url;
     },
-    onError: (error: any) => {
-      console.error("Checkout Error:", error.message);
+    onError: (error) => {
+      console.error("Checkout Error:", error);
     },
   });
 };

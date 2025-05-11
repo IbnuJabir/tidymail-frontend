@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import SuccessCard from "@/components/success-card";
 
 export const metadata: Metadata = {
   title: "Payment canceled",
