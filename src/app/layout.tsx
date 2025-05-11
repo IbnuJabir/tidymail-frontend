@@ -21,7 +21,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "TidyMail - Email Organization",
+  title: "TidyMail | Email Organization",
   description:
     "Clean up your inbox, manage subscriptions, and take control of your email",
 };
