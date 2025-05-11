@@ -1,6 +1,12 @@
 "use client";
 
-import { ChevronsUpDown, LogOut, Sparkles } from "lucide-react";
+import {
+  ChevronsUpDown,
+  CreditCard,
+  Loader2,
+  LogOut,
+  Sparkles,
+} from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -20,13 +26,18 @@ import {
 } from "@/components/ui/sidebar";
 import { useLogout } from "@/hooks/useAuth";
 import { User } from "@/types/auth";
+import { useCreateBillingPortalSession } from "@/services/email-service";
 
 export function NavUser(user: User) {
   const { isMobile } = useSidebar();
   const logoutMutation = useLogout();
+  const billinMutation = useCreateBillingPortalSession();
 
   const handleLogout = () => {
     logoutMutation.mutate();
+  };
+  const handleBilling = () => {
+    billinMutation.mutate();
   };
 
   return (
@@ -87,6 +98,16 @@ export function NavUser(user: User) {
             </DropdownMenuGroup>
 
             <DropdownMenuSeparator />
+            <DropdownMenuGroup onClick={() => handleBilling()}>
+              <DropdownMenuItem disabled={billinMutation.isPending}>
+                {billinMutation.isPending ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <CreditCard />
+                )}
+                Billing
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
             {/* <DropdownMenuGroup>
               <DropdownMenuItem>
                 <BadgeCheck />

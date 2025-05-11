@@ -1,5 +1,5 @@
 import api from "@/lib/api";
-import { CheckoutResponse } from "@/types/checkout";
+import { CheckoutResponse, PortalResponse } from "@/types/checkout";
 import { EmailAnalyticsResponse } from "@/types/dashboard";
 import type {
   Email,
@@ -276,5 +276,28 @@ export const useCheckout = () => {
     onError: (error) => {
       console.error("Checkout Error:", error);
     },
+  });
+};
+
+// create billing portal session
+const createBillingPortalSession = async (): Promise<PortalResponse> => {
+  try {
+    const response = await api.get("/subscription-plan/billing-portal");
+    return response.data;
+  } catch (error) {
+    console.error("Error creating billing portal session:", error);
+    throw new Error("Failed to create billing portal session");
+  }
+}
+export const useCreateBillingPortalSession = () => {
+  return useMutation({
+    mutationFn: createBillingPortalSession,
+    onSuccess: (data) => {
+      console.log("Billing Portal URL:", data.portal_url);
+      window.location.href = data.portal_url;
+    },
+    onError: (error) => {
+      console.error("Billing Portal Error:", error);
+    }
   });
 };
