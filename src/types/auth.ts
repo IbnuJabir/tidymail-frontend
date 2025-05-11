@@ -4,6 +4,7 @@ export interface User {
     email: string;
     name: string;
     profile_image: string;
+    subscription_plan: string;
     google_id: string;
     is_active: boolean;
     created_at: string;

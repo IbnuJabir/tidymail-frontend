@@ -27,7 +27,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Subscribe } from "../../../server/polar";
+// import { Subscribe } from "../../../server/polar";
+// import { useCheckout } from "@/services/email-service";
 
 export default function PricingSection() {
   const [isYearly, setIsYearly] = useState(false);
@@ -78,6 +79,12 @@ export default function PricingSection() {
     }
   };
 
+  // const checkoutMutation = useCheckout();
+
+  // const handleCheckout = (plan_key: string) => {
+  //   checkoutMutation.mutate(plan_key);
+  // };
+
   return (
     <section id="pricing" className="py-20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
@@ -93,7 +100,9 @@ export default function PricingSection() {
             <Label
               htmlFor="billing-toggle"
               className={`mr-2 text-xl ${
-                !isYearly ? "font-medium" : "text-muted-foreground cursor-pointer"
+                !isYearly
+                  ? "font-medium"
+                  : "text-muted-foreground cursor-pointer"
               }`}
             >
               Monthly
@@ -107,7 +116,9 @@ export default function PricingSection() {
             <Label
               htmlFor="billing-toggle"
               className={`ml-2 text-xl ${
-                isYearly ? "font-medium" : "text-muted-foreground cursor-pointer"
+                isYearly
+                  ? "font-medium"
+                  : "text-muted-foreground cursor-pointer"
               }`}
             >
               Yearly{" "}
@@ -229,9 +240,14 @@ export default function PricingSection() {
               </ul>
             </CardContent>
             <CardFooter>
-              {/* <Link href="/login" className="w-full">
-              </Link> */}
-                <Button className="w-full" onClick={()=>Subscribe()}>Get Started</Button>
+              <Link href="/login" className="w-full">
+                <Button
+                  className="w-full"
+                  // onClick={() => handleCheckout("pro_yearly")}
+                >
+                  Get Started
+                </Button>
+              </Link>
             </CardFooter>
           </Card>
 
@@ -245,7 +261,7 @@ export default function PricingSection() {
               <div className="mt-4 flex items-baseline text-5xl font-extrabold">
                 ${isYearly ? "14.99" : "19.99"}
                 <span className="ml-1 text-xl font-medium text-muted-foreground">
-                 /month
+                  /month
                 </span>
               </div>
               {isYearly && (
@@ -329,7 +345,10 @@ export default function PricingSection() {
               you within 24 hours.
             </DialogDescription>
           </DialogHeader>
-          <form onSubmit={handleEnterpriseSubmit} className="md:space-y-6 mt-2 md:mt-6">
+          <form
+            onSubmit={handleEnterpriseSubmit}
+            className="md:space-y-6 mt-2 md:mt-6"
+          >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
               <div className="space-y-2">
                 <Label htmlFor="name" className="md:text-base">

@@ -1,11 +1,7 @@
 "use client";
 
 import * as React from "react";
-import {
-  AudioWaveform,
-  Home,
-  UserX,
-} from "lucide-react";
+import { Home, UserX } from "lucide-react";
 import { UserRound } from "lucide-react";
 import { NavUser } from "@/components/nav-user";
 import { TeamSwitcher } from "@/components/team-switcher";
@@ -21,16 +17,9 @@ import {
 } from "@/components/ui/sidebar";
 // import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useUser } from "@/hooks/useAuth";
+import logo from "@/assets/logo.png";
 
-const data = {
-  teams: [
-    {
-      name: "Tidy Mail.",
-      logo: AudioWaveform,
-      plan: "Free",
-    },
-  ],
-};
 const routes = [
   {
     title: "Dashboard",
@@ -55,10 +44,16 @@ const routes = [
 ];
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
+  const { data: user } = useUser();
+  const teams = {
+    name: "Tidy Mail.",
+    logo: logo,
+    plan: user?.subscription_plan,
+  };
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <TeamSwitcher teams={teams} />
       </SidebarHeader>
       <SidebarContent>
         <SidebarMenu>
@@ -78,9 +73,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           ))}
         </SidebarMenu>
       </SidebarContent>
-      <SidebarFooter>
-        <NavUser />
-      </SidebarFooter>
+      <SidebarFooter>{user && <NavUser {...user} />}</SidebarFooter>
       <SidebarRail />
     </Sidebar>
   );

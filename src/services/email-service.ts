@@ -1,4 +1,5 @@
 import api from "@/lib/api";
+import { CheckoutResponse } from "@/types/checkout";
 import { EmailAnalyticsResponse } from "@/types/dashboard";
 import type {
   Email,
@@ -6,6 +7,7 @@ import type {
   GetSubscriptionsResponse,
   AnalysisBatchResult,
 } from "@/types/email";
+import { useMutation } from "@tanstack/react-query";
 
 interface EmailResponse {
   status: string;
@@ -244,10 +246,38 @@ export async function subscribeBack(email: string) {
 
 export async function fetchEmailAnalytics(): Promise<EmailAnalyticsResponse> {
   try {
-    const response = await api.get<EmailAnalyticsResponse>('/analytics')
-    return response.data
+    const response = await api.get<EmailAnalyticsResponse>("/analytics");
+    return response.data;
   } catch (error) {
-    console.error("Error fetching email analytics:", error)
-    throw new Error("Failed to fetch email analytics data")
+    console.error("Error fetching email analytics:", error);
+    throw new Error("Failed to fetch email analytics data");
   }
 }
+
+const checkout = async (plan_key: string): Promise<CheckoutResponse> => {
+  try {
+    const response = await api.post("/subscription-plan/checkout", {
+      plan_key,
+      success_url: "http://localhost:3000/payment/success",
+      cancel_url: "http://localhost:3000/payment/cancel",
+    });
+    return response.data;
+  } catch (error: any) {
+    throw new Error(
+      error?.response?.data?.detail || "Failed to create checkout session"
+    );
+  }
+};
+
+export const useCheckout = () => {
+  return useMutation({
+    mutationFn: checkout,
+    onSuccess: (data) => {
+      console.log("Checkout Success:", data);
+      window.location.href = data.checkout_url;
+    },
+    onError: (error: any) => {
+      console.error("Checkout Error:", error.message);
+    },
+  });
+};

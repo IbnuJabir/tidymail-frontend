@@ -65,7 +65,7 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="/terms-and-privacy#privacy-policy"
+                  href="/privacy"
                   className="text-muted-foreground hover:text-foreground"
                 >
                   Privacy Policy
@@ -73,7 +73,7 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="/terms-and-privacy#terms-of-services"
+                  href="/terms"
                   className="text-muted-foreground hover:text-foreground"
                 >
                   Terms of Service

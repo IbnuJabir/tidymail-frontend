@@ -2,12 +2,7 @@
 
 import { ChevronsUpDown, LogOut, Sparkles } from "lucide-react";
 
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-  // AvatarImage,
-} from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,15 +18,17 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useLogout, useUser } from "@/hooks/useAuth";
+import { useLogout } from "@/hooks/useAuth";
+import { User } from "@/types/auth";
 
-export function NavUser() {
+export function NavUser(user: User) {
   const { isMobile } = useSidebar();
-  const { data: user, isLoading, error } = useUser();
   const logoutMutation = useLogout();
+
   const handleLogout = () => {
     logoutMutation.mutate();
   };
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -52,8 +49,9 @@ export function NavUser() {
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
+
           <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+            className="min-w-56 rounded-lg"
             side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}
@@ -70,13 +68,24 @@ export function NavUser() {
                 </div>
               </div>
             </DropdownMenuLabel>
+
             <DropdownMenuSeparator />
+
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles />
-                Upgrade to Pro
-              </DropdownMenuItem>
+              {user?.subscription_plan === "free" && (
+                <DropdownMenuItem>
+                  <Sparkles className="mr-2 h-4 w-4" />
+                  Upgrade to Pro
+                </DropdownMenuItem>
+              )}
+              {user?.subscription_plan === "pro" && (
+                <DropdownMenuItem>
+                  <Sparkles className="mr-2 h-4 w-4" />
+                  Upgrade to Business
+                </DropdownMenuItem>
+              )}
             </DropdownMenuGroup>
+
             <DropdownMenuSeparator />
             {/* <DropdownMenuGroup>
               <DropdownMenuItem>
@@ -84,12 +93,14 @@ export function NavUser() {
                 Account
               </DropdownMenuItem>
             </DropdownMenuGroup> */}
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout}>
-              <LogOut />
-              {isLoading
+            <DropdownMenuItem
+              onClick={handleLogout}
+              disabled={logoutMutation.isPending}
+            >
+              <LogOut className="mr-2 h-4 w-4" />
+              {logoutMutation.isPending
                 ? "Logging out..."
-                : error
+                : logoutMutation.isError
                 ? "Error logging out"
                 : "Log out"}
             </DropdownMenuItem>
