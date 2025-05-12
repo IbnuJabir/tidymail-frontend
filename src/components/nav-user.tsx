@@ -82,32 +82,36 @@ export function NavUser(user: User) {
 
             <DropdownMenuSeparator />
 
-            <DropdownMenuGroup>
-              {user?.subscription_plan === "free" && (
+            {user?.subscription_plan === "Free" && (
+              <DropdownMenuGroup>
                 <DropdownMenuItem>
                   <Sparkles className="mr-2 h-4 w-4" />
                   Upgrade to Pro
                 </DropdownMenuItem>
-              )}
-              {user?.subscription_plan === "pro" && (
+              </DropdownMenuGroup>
+            )}
+            {user?.subscription_plan === "pro" && (
+              <DropdownMenuGroup>
                 <DropdownMenuItem>
                   <Sparkles className="mr-2 h-4 w-4" />
                   Upgrade to Business
                 </DropdownMenuItem>
-              )}
-            </DropdownMenuGroup>
+              </DropdownMenuGroup>
+            )}
 
             <DropdownMenuSeparator />
-            <DropdownMenuGroup onClick={() => handleBilling()}>
-              <DropdownMenuItem disabled={billinMutation.isPending}>
-                {billinMutation.isPending ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                  <CreditCard />
-                )}
-                Billing
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
+            {user?.subscription_plan != "Free" && (
+              <DropdownMenuGroup onClick={() => handleBilling()}>
+                <DropdownMenuItem disabled={billinMutation.isPending}>
+                  {billinMutation.isPending ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <CreditCard />
+                  )}
+                  Billing
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            )}
             {/* <DropdownMenuGroup>
               <DropdownMenuItem>
                 <BadgeCheck />

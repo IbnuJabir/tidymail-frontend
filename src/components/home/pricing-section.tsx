@@ -27,7 +27,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-// import { Subscribe } from "../../../server/polar";
 // import { useCheckout } from "@/services/email-service";
 
 export default function PricingSection() {
