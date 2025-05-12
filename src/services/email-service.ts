@@ -57,7 +57,7 @@ export async function analyzeSubscriptionBatch(
     if (params.toString()) {
       url += `?${params.toString()}`;
     }
-    const response = await api.get(url);
+    const response = await api.post(url);
     return response.data;
   } catch (error) {
     console.error("Error analyzing subscription batch:", error);

@@ -6,7 +6,11 @@ import { CheckCircle, Loader2, Mail } from "lucide-react";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { analyzeSubscriptionBatch } from "@/services/email-service";
-import { AnalysisProgressResponse } from "@/types/email";
+import type {
+  AnalysisBatchResult,
+  AnalysisProgressResponse,
+} from "@/types/email";
+import { useMutation } from "@tanstack/react-query";
 
 export default function CompletePage() {
   const router = useRouter();
@@ -31,50 +35,52 @@ export default function CompletePage() {
     isProcessing: false,
   });
 
-  // Function to process a single batch with optimized batch size
-  const processBatch = async (pageToken: string | null = null) => {
-    try {
-      setCurrentBatch({ pageToken, isProcessing: true });
+  // Replace useQuery with useMutation
+  const { mutate: processBatch, isPending: isProcessing } = useMutation({
+    mutationFn: (pageToken: string | null) =>
+      analyzeSubscriptionBatch(pageToken, 100),
+    onSuccess: (data: AnalysisBatchResult) => {
+      if (!data) return;
 
-      // Use a larger batch size (100 instead of 50) for better performance
-      const batchResult = await analyzeSubscriptionBatch(pageToken, 100);
-
-      // Update progress
       setAnalysisProgress((prev) => ({
-        totalProcessed: prev.totalProcessed + batchResult.data.processed_count,
+        totalProcessed: prev.totalProcessed + data.data.processed_count,
         totalNewSubscriptions:
-          prev.totalNewSubscriptions + batchResult.data.new_subscriptions,
-        isComplete: batchResult.data.is_complete,
+          prev.totalNewSubscriptions + data.data.new_subscriptions,
+        isComplete: data.data.is_complete,
         error: null,
       }));
 
-      // Process multiple batches in parallel if we're early in the analysis
       if (
-        !batchResult.data.is_complete && 
-        batchResult.data.next_page_token &&
-        analysisProgress.totalProcessed < 200 // Only use parallel processing at beginning
+        !data.data.is_complete &&
+        data.data.next_page_token &&
+        analysisProgress.totalProcessed < 200
       ) {
-        // Process next batch immediately (no delay)
-        processBatch(batchResult.data.next_page_token);
-      } 
-      // Otherwise use sequential processing with a small delay
-      else if (!batchResult.data.is_complete && batchResult.data.next_page_token) {
+        setCurrentBatch({
+          pageToken: data.data.next_page_token,
+          isProcessing: true,
+        });
+        processBatch(data.data.next_page_token);
+      } else if (!data.data.is_complete && data.data.next_page_token) {
         setTimeout(() => {
-          processBatch(batchResult.data.next_page_token);
-        }, 100); // Reduced delay for better performance
+          setCurrentBatch({
+            pageToken: data.data.next_page_token,
+            isProcessing: true,
+          });
+          processBatch(data.data.next_page_token);
+        }, 100);
       } else {
-        // Analysis complete
         setCurrentBatch({ pageToken: null, isProcessing: false });
       }
-    } catch (error) {
+    },
+    onError: (error: Error) => {
       console.error("Error processing batch:", error);
       setAnalysisProgress((prev) => ({
         ...prev,
-        error: (error as Error).message,
+        error: error.message,
       }));
       setCurrentBatch({ pageToken: null, isProcessing: false });
-    }
-  };
+    },
+  });
 
   // Start the analysis when requested
   useEffect(() => {
@@ -84,24 +90,42 @@ export default function CompletePage() {
       !analysisProgress.isComplete &&
       !analysisProgress.error
     ) {
-      processBatch();
+      setCurrentBatch({ pageToken: null, isProcessing: true });
     }
-  }, [startAnalysis]);
+  }, [
+    startAnalysis,
+    currentBatch.isProcessing,
+    analysisProgress.isComplete,
+    analysisProgress.error,
+  ]);
 
-  const handleAnalyze = () => setStartAnalysis(true);
-  const goToDashboard = () => router.push("/subscriptions");
+  const handleAnalyze = () => {
+    processBatch(currentBatch.pageToken);
+    setStartAnalysis(true);
+  };
+  const goToDashboard = () => router.push("/dashboard");
+
   const retryAnalysis = () => {
+    // Reset all states
+    processBatch(currentBatch.pageToken);
     setAnalysisProgress({
       totalProcessed: 0,
       totalNewSubscriptions: 0,
       isComplete: false,
       error: null,
     });
+
+    // Reset batch state
     setCurrentBatch({ pageToken: null, isProcessing: false });
-    // Small delay before restarting
+
+    // Force a small delay before restarting to ensure state updates are processed
     setTimeout(() => {
-      setStartAnalysis(true);
-    }, 100);
+      // This will trigger the useEffect to start processing again
+      setStartAnalysis(false);
+      setTimeout(() => {
+        setStartAnalysis(true);
+      }, 50);
+    }, 50);
   };
 
   // More accurate progress estimation
@@ -116,6 +140,8 @@ export default function CompletePage() {
           99
         )
       : 0;
+
+  // const isProcessing = currentBatch.isProcessing || processBatchQuery.isFetching
 
   return (
     <div>
@@ -154,7 +180,7 @@ export default function CompletePage() {
             Analyze Your Subscriptions
           </Button>
         </motion.div>
-      ) : currentBatch.isProcessing ||
+      ) : isProcessing ||
         (!analysisProgress.isComplete &&
           startAnalysis &&
           !analysisProgress.error) ? (
