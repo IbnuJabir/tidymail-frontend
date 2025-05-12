@@ -100,8 +100,8 @@ export function NavUser(user: User) {
             )}
 
             <DropdownMenuSeparator />
-            {user?.subscription_plan !== "free" &&
-              user?.subscription_plan !== "Free" && (
+            {user?.subscription_plan?.toLowerCase() !== "free" && (
+              <>
                 <DropdownMenuGroup onClick={() => handleBilling()}>
                   <DropdownMenuItem disabled={billinMutation.isPending}>
                     {billinMutation.isPending ? (
@@ -112,7 +112,9 @@ export function NavUser(user: User) {
                     Billing
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
-              )}
+                <DropdownMenuSeparator />
+              </>
+            )}
 
             {/* <DropdownMenuGroup>
               <DropdownMenuItem>
