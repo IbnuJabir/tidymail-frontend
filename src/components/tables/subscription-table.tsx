@@ -624,14 +624,14 @@ export function SubscriptionTable() {
           </div>
         </form>
         <div className="flex flex-wrap gap-2">
-          <Button
+          {/* <Button
             variant="outline"
             size="sm"
             onClick={() => analyzeSubscriptionBatch()}
           >
             <RefreshCcw className="mr-2 h-4 w-4" />
             <span className="hidden sm:inline">Sync</span>
-          </Button>
+          </Button> */}
           <Button
             variant="outline"
             size="sm"
