@@ -11,7 +11,7 @@ import logo from "@/assets/logo.png"
 export function LoginForm() {
   const handleGoogleLogin = () => {
     // Redirect to backend Google OAuth endpoint
-    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/login?subscription=pro`
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/login`
   }
 
   return (
