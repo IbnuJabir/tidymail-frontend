@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 // Define protected and public routes
-const protectedRoutes = ['/subscriptions', '/unsubscribed', '/emails']
+const protectedRoutes = ['/dashboard','/subscriptions', '/unsubscribed', '/emails', '/onboarding', '/settings', '/profile', '/billing', '/api']
 const publicRoutes = ['/login']
 
 export async function middleware(req: NextRequest) {

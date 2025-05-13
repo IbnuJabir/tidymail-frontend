@@ -1,8 +1,28 @@
 "use client"
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
-import { Area, AreaChart, CartesianGrid, Legend, ResponsiveContainer, XAxis, YAxis } from "recharts"
+import { TrendingUp } from "lucide-react"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart"
+import {
+  CartesianGrid,
+  Line,
+  LineChart,
+  Legend,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+} from "recharts"
 
 interface ActivityChartProps {
   data: Array<{
@@ -14,14 +34,15 @@ interface ActivityChartProps {
   }>
 }
 
-export function ActivityChart({ data }: ActivityChartProps) {
-  // Format dates for better display
+export function ActivityLineChart({ data }: ActivityChartProps) {
   const formattedData = data.map((item) => ({
     ...item,
-    date: new Date(item.date).toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+    date: new Date(item.date).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    }),
   }))
 
-  // If there's only one data point, duplicate it to show a line
   const chartData =
     formattedData.length === 1
       ? [
@@ -30,18 +51,39 @@ export function ActivityChart({ data }: ActivityChartProps) {
         ]
       : formattedData
 
-  // Check if we have any non-zero data
   const hasNonZeroData = chartData.some(
-    (item) => item.subscriptions > 0 || item.unsubscribed > 0 || item.trashed > 0 || item.deleted > 0,
+    (item) =>
+      item.subscriptions > 0 ||
+      item.unsubscribed > 0 ||
+      item.trashed > 0 ||
+      item.deleted > 0
   )
 
-  // If all data is zero, add a small value to make the chart visible
   const displayData = hasNonZeroData
     ? chartData
     : chartData.map((item) => ({
         ...item,
         subscriptions: item.subscriptions === 0 ? 1 : item.subscriptions,
       }))
+
+  const chartConfig = {
+    subscriptions: {
+      label: "Active Subscriptions",
+      color: "hsl(var(--chart-1))",
+    },
+    unsubscribed: {
+      label: "Unsubscribed",
+      color: "hsl(var(--chart-2))",
+    },
+    trashed: {
+      label: "Trashed",
+      color: "hsl(var(--chart-3))",
+    },
+    deleted: {
+      label: "Deleted",
+      color: "hsl(var(--chart-4))",
+    },
+  }
 
   return (
     <Card className="col-span-1 lg:col-span-3 shadow-sm overflow-hidden">
@@ -51,75 +93,65 @@ export function ActivityChart({ data }: ActivityChartProps) {
       </CardHeader>
       <CardContent className="p-0">
         <div className="h-[350px] w-full overflow-hidden">
-          <ChartContainer
-            config={{
-              subscriptions: {
-                label: "Active Subscriptions",
-                color: "hsl(var(--chart-1))",
-              },
-              unsubscribed: {
-                label: "Unsubscribed",
-                color: "hsl(var(--chart-2))",
-              },
-              trashed: {
-                label: "Trashed",
-                color: "hsl(var(--chart-3))",
-              },
-              deleted: {
-                label: "Deleted",
-                color: "hsl(var(--chart-4))",
-              },
-            }}
-            className="h-full w-full"
-          >
+          <ChartContainer config={chartConfig} className="h-full w-full">
             <ResponsiveContainer width="99%" height="99%">
-              <AreaChart data={displayData} margin={{ top: 20, right: 20, left: 20, bottom: 60 }}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" tick={{ fontSize: 12 }} height={40} />
-                <YAxis width={40} tick={{ fontSize: 12 }} />
+              <LineChart data={displayData} margin={{ top: 20, right: 20, left: 20, bottom: 60 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                <XAxis
+                  dataKey="date"
+                  tick={{ fontSize: 12 }}
+                  height={40}
+                  tickLine={false}
+                  axisLine={false}
+                />
+                <YAxis tick={{ fontSize: 12 }} width={40} />
                 <ChartTooltip content={<ChartTooltipContent />} />
                 <Legend verticalAlign="bottom" height={36} wrapperStyle={{ paddingTop: "10px" }} />
-                <Area
+                <Line
                   type="monotone"
                   dataKey="subscriptions"
                   stroke="var(--color-subscriptions)"
-                  fill="var(--color-subscriptions)"
-                  fillOpacity={0.2}
                   strokeWidth={2}
-                  isAnimationActive={false}
+                  dot={false}
                 />
-                <Area
+                <Line
                   type="monotone"
                   dataKey="unsubscribed"
                   stroke="var(--color-unsubscribed)"
-                  fill="var(--color-unsubscribed)"
-                  fillOpacity={0.2}
                   strokeWidth={2}
-                  isAnimationActive={false}
+                  dot={false}
                 />
-                <Area
+                <Line
                   type="monotone"
                   dataKey="trashed"
                   stroke="var(--color-trashed)"
-                  fill="var(--color-trashed)"
-                  fillOpacity={0.2}
                   strokeWidth={2}
-                  isAnimationActive={false}
+                  dot={false}
                 />
-                <Area
+                <Line
                   type="monotone"
                   dataKey="deleted"
                   stroke="var(--color-deleted)"
-                  fill="var(--color-deleted)"
-                  fillOpacity={0.2}
                   strokeWidth={2}
-                  isAnimationActive={false}
+                  dot={false}
                 />
-              </AreaChart>
+              </LineChart>
             </ResponsiveContainer>
           </ChartContainer>
         </div>
       </CardContent>
+      <CardFooter>
+        <div className="flex w-full items-start gap-2 text-sm">
+          <div className="grid gap-2">
+            <div className="flex items-center gap-2 font-medium leading-none">
+              Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
+            </div>
+            <div className="flex items-center gap-2 leading-none text-muted-foreground">
+              Showing activity summary over time
+            </div>
+          </div>
+        </div>
+      </CardFooter>
     </Card>
   )
 }
