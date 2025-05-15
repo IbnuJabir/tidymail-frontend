@@ -1,5 +1,5 @@
 "use client";
-import { CheckCircle, X } from "lucide-react";
+import { CheckCircle, Loader, Loader2, X } from "lucide-react";
 import type React from "react";
 
 import { Button } from "@/components/ui/button";
@@ -27,7 +27,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-// import { useCheckout } from "@/services/email-service";
 
 export default function PricingSection() {
   const [isYearly, setIsYearly] = useState(false);
@@ -77,12 +76,6 @@ export default function PricingSection() {
       setIsSubmitting(false);
     }
   };
-
-  // const checkoutMutation = useCheckout();
-
-  // const handleCheckout = (plan_key: string) => {
-  //   checkoutMutation.mutate(plan_key);
-  // };
 
   return (
     <section id="pricing" className="py-20">
@@ -240,12 +233,7 @@ export default function PricingSection() {
             </CardContent>
             <CardFooter>
               <Link href="/login" className="w-full">
-                <Button
-                  className="w-full"
-                  // onClick={() => handleCheckout("pro_yearly")}
-                >
-                  Get Started
-                </Button>
+                <Button className="w-full">Get Started</Button>
               </Link>
             </CardFooter>
           </Card>
