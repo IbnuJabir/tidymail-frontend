@@ -38,7 +38,7 @@ export default function CompletePage() {
   // Replace useQuery with useMutation
   const { mutate: processBatch, isPending: isProcessing } = useMutation({
     mutationFn: (pageToken: string | null) =>
-      analyzeSubscriptionBatch(pageToken, 100),
+      analyzeSubscriptionBatch(pageToken, 100, true),
     onSuccess: (data: AnalysisBatchResult) => {
       if (!data) return;
 
