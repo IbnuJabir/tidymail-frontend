@@ -48,7 +48,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const teams = {
     name: "Tidy Mail.",
     logo: logo,
-    plan: user?.subscription_plan,
+    plan: user?.subscription_plan.toUpperCase(),
   };
   return (
     <Sidebar collapsible="icon" {...props}>
