@@ -36,6 +36,7 @@ import {
   Loader2,
   Mail,
   MoreHorizontal,
+  RefreshCcw,
   Search,
   Trash,
   Trash2,
@@ -52,6 +53,7 @@ import {
 } from "@/services/email-service";
 import type { Subscription } from "@/types/email";
 import { DataTableViewOptions } from "../data-table/data-table-view-options";
+import SyncButton from "../sync-analyze";
 
 export function SubscriptionTable() {
   const queryClient = useQueryClient();
@@ -182,10 +184,11 @@ export function SubscriptionTable() {
           : "Subscription deleted permanently",
       });
     },
-    onError: (error) => {
+    onError: (error: Error) => {
       toast.error("Failed to delete", {
         description:
-          error instanceof Error ? error.message : "An unknown error occurred",
+          (error as { response?: { data?: { detail?: string } } })?.response?.data?.detail ||
+          (error instanceof Error ? error.message : "An unknown error occurred"),
       });
     },
   });
@@ -622,14 +625,8 @@ export function SubscriptionTable() {
           </div>
         </form>
         <div className="flex flex-wrap gap-2">
-          {/* <Button
-            variant="outline"
-            size="sm"
-            onClick={() => analyzeSubscriptionBatch()}
-          >
-            <RefreshCcw className="mr-2 h-4 w-4" />
-            <span className="hidden sm:inline">Sync</span>
-          </Button> */}
+         <SyncButton />
+
           <Button
             variant="outline"
             size="sm"
