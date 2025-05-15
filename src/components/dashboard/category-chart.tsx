@@ -106,7 +106,7 @@ export function CategoryChart({ data }: CategoryChartProps) {
                   formatter={(value, name) => {
                     return [
                       `${value} subscriptions`,
-                      `${((Number(value) / total) * 100).toFixed(1)}%`
+                      ` ${((Number(value) / total) * 100).toFixed(1)}%`
                     ]
                   }}
                 />

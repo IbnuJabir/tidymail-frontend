@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Mail } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useSendContactMessage } from "@/services/email-service";
 
 export default function ContactSection() {
   const [formData, setFormData] = useState({
@@ -15,7 +16,6 @@ export default function ContactSection() {
     subject: "",
     message: "",
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -24,18 +24,13 @@ export default function ContactSection() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const contactMutation = useSendContactMessage()
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
 
     try {
-      // Example: await sendContactForm(formData)
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      toast.success("Message sent!", {
-        description: "We'll get back to you as soon as possible.",
-      });
-
+      contactMutation.mutate(formData);
       setFormData({
         name: "",
         email: "",
@@ -46,8 +41,6 @@ export default function ContactSection() {
       toast.error("Something went wrong", {
         description: `${error}Please try again later.`,
       });
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -144,8 +137,8 @@ export default function ContactSection() {
                   required
                 />
               </div>
-              <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {isSubmitting ? (
+              <Button type="submit" className="w-full" disabled={contactMutation.isPending}>
+                {contactMutation.isPending ? (
                   <div className="flex items-center">
                     <svg
                       className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
