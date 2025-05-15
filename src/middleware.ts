@@ -32,8 +32,8 @@ export async function middleware(req: NextRequest) {
   }
   
   // If the route is public and the user is authenticated, redirect to subscriptions page
-  if (isPublicRoute && isAuthenticated && path !== '/subscriptions') {
-    return NextResponse.redirect(new URL('/subscriptions', req.nextUrl))
+  if (isPublicRoute && isAuthenticated && path !== '/dashboard') {
+    return NextResponse.redirect(new URL('/dashboard', req.nextUrl))
   }
   
   // Continue with the request

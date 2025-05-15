@@ -44,7 +44,8 @@ export async function fetchEmails(): Promise<{
  */
 export async function analyzeSubscriptionBatch(
   pageToken?: string | null,
-  batchSize = 100 // Increased batch size for better performance
+  batchSize = 100, // Increased batch size for better performance
+  fresh_analysis?: boolean
 ): Promise<AnalysisBatchResult> {
   try {
     let url = "/subscription/analyze-subscriptions";
@@ -54,6 +55,7 @@ export async function analyzeSubscriptionBatch(
       params.append("page_token", pageToken);
     }
     params.append("batch_size", batchSize.toString());
+    params.append("fresh_analysis", fresh_analysis? "true" : "false");
     if (params.toString()) {
       url += `?${params.toString()}`;
     }
@@ -254,10 +256,10 @@ export async function fetchEmailAnalytics(): Promise<EmailAnalyticsResponse> {
   }
 }
 
-const checkout = async (plan_key: string): Promise<CheckoutResponse> => {
+const checkout = async (plan_keys: string[]): Promise<CheckoutResponse> => {
   try {
     const response = await api.post("/subscription-plan/checkout", {
-      plan_key,
+      plan_keys,
       success_url: "http://localhost:3000/payment/success",
     });
     return response.data;
