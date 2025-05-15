@@ -27,6 +27,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { sendEnterpriseRequest } from "@/services/email-service";
+import { useMutation } from "@tanstack/react-query";
 
 export default function PricingSection() {
   const [isYearly, setIsYearly] = useState(false);
@@ -38,8 +40,27 @@ export default function PricingSection() {
     employees: "",
     message: "",
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const useSendEnterpriseRequest = () => {
+    return useMutation({
+      mutationFn: sendEnterpriseRequest,
+      onSuccess: () => {
+        toast.success("Request Submitted", {
+          description: "Our sales team will contact you shortly.",
+        });
+        setIsModalOpen(false);
+        console.log("Enterprise request sent successfully");
+      },
+      onError: (error) => {
+        toast.error("Something went wrong", {
+          description: `${error}Please try again later.`,
+        });
+        console.error("Enterprise request error:", error);
+      },
+    });
+  };
+
+ const enterpriseMutation = useSendEnterpriseRequest();
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -49,18 +70,13 @@ export default function PricingSection() {
 
   const handleEnterpriseSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
-
-    // Simulate API call
     try {
-      // In a real implementation, you would send this data to your backend
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      toast.success("Request Submitted", {
-        description: "Our sales team will contact you shortly.",
+      enterpriseMutation.mutate(formData);
+    } catch (error) {
+      toast.error("Something went wrong", {
+        description: `${error}Please try again later.`,
       });
-
-      setIsModalOpen(false);
+    } finally {
       setFormData({
         name: "",
         email: "",
@@ -68,14 +84,9 @@ export default function PricingSection() {
         employees: "",
         message: "",
       });
-    } catch (error) {
-      toast.error("Something went wrong", {
-        description: `${error}Please try again later.`,
-      });
-    } finally {
-      setIsSubmitting(false);
     }
   };
+  
 
   return (
     <section id="pricing" className="py-20">
@@ -411,9 +422,9 @@ export default function PricingSection() {
               <Button
                 type="submit"
                 className="w-full h-12 text-base"
-                disabled={isSubmitting}
+                disabled={enterpriseMutation.isPending}
               >
-                {isSubmitting ? (
+                {enterpriseMutation.isPending ? (
                   <div className="flex items-center">
                     <svg
                       className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"

@@ -25,7 +25,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useCheckout } from "@/services/email-service";
+import { sendEnterpriseRequest, useCheckout } from "@/services/email-service";
+import { useMutation } from "@tanstack/react-query";
 
 interface PricingModalProps {
   open: boolean;
@@ -45,7 +46,27 @@ export default function PricingModal({
     employees: "",
     message: "",
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const useSendEnterpriseRequest = () => {
+    return useMutation({
+      mutationFn: sendEnterpriseRequest,
+      onSuccess: () => {
+        toast.success("Request Submitted", {
+          description: "Our sales team will contact you shortly.",
+        });
+        setActiveTab("plans");
+        console.log("Enterprise request sent successfully");
+      },
+      onError: (error) => {
+        toast.error("Something went wrong", {
+          description: `${error}Please try again later.`,
+        });
+        console.error("Enterprise request error:", error);
+      },
+    });
+  };
+
+  const enterpriseMutation = useSendEnterpriseRequest();
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -56,18 +77,13 @@ export default function PricingModal({
 
   const handleEnterpriseSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
-
-    // Simulate API call
     try {
-      // In a real implementation, you would send this data to your backend
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      toast.success("Request Submitted", {
-        description: "Our sales team will contact you shortly.",
+      enterpriseMutation.mutate(formData);
+    } catch (error) {
+      toast.error("Something went wrong", {
+        description: `${error}Please try again later.`,
       });
-
-      setActiveTab("plans");
+    } finally {
       setFormData({
         name: "",
         email: "",
@@ -75,12 +91,6 @@ export default function PricingModal({
         employees: "",
         message: "",
       });
-    } catch (error) {
-      toast.error("Something went wrong", {
-        description: `${error}Please try again later.`,
-      });
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -395,9 +405,9 @@ export default function PricingModal({
                 <Button
                   type="submit"
                   className="w-full h-12"
-                  disabled={isSubmitting}
+                  disabled={enterpriseMutation.isPending}
                 >
-                  {isSubmitting ? (
+                  {enterpriseMutation.isPending ? (
                     <div className="flex items-center justify-center">
                       <Loader2 className="h-5 w-5 animate-spin mr-2" />
                       <span>Submitting...</span>
