@@ -27,6 +27,8 @@ import {
 import { useLogout } from "@/hooks/useAuth";
 import { User } from "@/types/auth";
 import { useCreateBillingPortalSession } from "@/services/email-service";
+import { useState } from "react";
+import PricingModal from "./dashboard/pricing-modal";
 
 export function NavUser(user: User) {
   const { isMobile } = useSidebar();
@@ -39,7 +41,7 @@ export function NavUser(user: User) {
   const handleBilling = () => {
     billinMutation.mutate();
   };
-
+  const [isPricingOpen, setIsPricingOpen] = useState(false);
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -83,7 +85,7 @@ export function NavUser(user: User) {
             <DropdownMenuSeparator />
 
             {user?.subscription_plan === "free" && (
-              <DropdownMenuGroup>
+              <DropdownMenuGroup onClick={() => setIsPricingOpen(true)}>
                 <DropdownMenuItem>
                   <Sparkles className="mr-2 h-4 w-4" />
                   Upgrade to Pro
@@ -91,7 +93,7 @@ export function NavUser(user: User) {
               </DropdownMenuGroup>
             )}
             {user?.subscription_plan === "pro" && (
-              <DropdownMenuGroup>
+              <DropdownMenuGroup onClick={() => setIsPricingOpen(true)}>
                 <DropdownMenuItem>
                   <Sparkles className="mr-2 h-4 w-4" />
                   Upgrade to Business
@@ -135,6 +137,7 @@ export function NavUser(user: User) {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        <PricingModal open={isPricingOpen} onOpenChange={setIsPricingOpen} />
       </SidebarMenuItem>
     </SidebarMenu>
   );
