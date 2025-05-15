@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { CheckCircle, Loader, Loader2, X } from "lucide-react";
+import { CheckCircle, Loader, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -9,7 +9,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
@@ -108,7 +107,7 @@ export default function PricingModal({
             Pricing Plans
           </DialogTitle>
           <DialogDescription className="text-center text-lg">
-            Choose the plan that's right for you.
+            Choose the plan that&apos;s right for you.
           </DialogDescription>
         </DialogHeader>
 

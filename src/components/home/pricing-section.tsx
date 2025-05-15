@@ -1,5 +1,5 @@
 "use client";
-import { CheckCircle, Loader, Loader2, X } from "lucide-react";
+import { CheckCircle, X } from "lucide-react";
 import type React from "react";
 
 import { Button } from "@/components/ui/button";

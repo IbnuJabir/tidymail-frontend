@@ -103,7 +103,7 @@ export function CategoryChart({ data }: CategoryChartProps) {
               content={
                 <ChartTooltipContent 
                   hideLabel={false} 
-                  formatter={(value, name) => {
+                  formatter={(value) => {
                     return [
                       `${value} subscriptions`,
                       ` ${((Number(value) / total) * 100).toFixed(1)}%`

@@ -19,11 +19,9 @@ import type {
   AnalysisProgressResponse,
 } from "@/types/email";
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 export default function SyncButton() {
-  const router = useRouter();
 
   const [open, setOpen] = useState(false);
 

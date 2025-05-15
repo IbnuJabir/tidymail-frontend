@@ -36,7 +36,6 @@ import {
   Loader2,
   Mail,
   MoreHorizontal,
-  RefreshCcw,
   Search,
   Trash,
   Trash2,
