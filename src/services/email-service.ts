@@ -8,6 +8,7 @@ import type {
   AnalysisBatchResult,
 } from "@/types/email";
 import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 interface EmailResponse {
   status: string;
@@ -55,7 +56,7 @@ export async function analyzeSubscriptionBatch(
       params.append("page_token", pageToken);
     }
     params.append("batch_size", batchSize.toString());
-    params.append("fresh_analysis", fresh_analysis? "true" : "false");
+    params.append("fresh_analysis", fresh_analysis ? "true" : "false");
     if (params.toString()) {
       url += `?${params.toString()}`;
     }
@@ -290,7 +291,7 @@ const createBillingPortalSession = async (): Promise<PortalResponse> => {
     console.error("Error creating billing portal session:", error);
     throw new Error("Failed to create billing portal session");
   }
-}
+};
 export const useCreateBillingPortalSession = () => {
   return useMutation({
     mutationFn: createBillingPortalSession,
@@ -300,6 +301,54 @@ export const useCreateBillingPortalSession = () => {
     },
     onError: (error) => {
       console.error("Billing Portal Error:", error);
-    }
+    },
   });
+};
+
+const sendContactMessage = async (formData: {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+}) => {
+  try {
+    const response = await api.post("/contact/feedback", formData);
+    return response.data;
+  } catch (error) {
+    console.error("Error sending contact message:", error);
+    throw new Error("Failed to send contact message");
+  }
+};
+export const useSendContactMessage = () => {
+  return useMutation({
+    mutationFn: sendContactMessage,
+    onSuccess: () => {
+      toast.success("Message sent!", {
+        description: "We'll get back to you as soon as possible.",
+      });
+      console.log("Contact message sent successfully");
+    },
+    onError: (error) => {
+      toast.error("Something went wrong", {
+        description: `${error}Please try again later.`,
+      });
+      console.error("Contact message error:", error);
+    },
+  });
+};
+
+export const sendEnterpriseRequest = async (formData: {
+  name: string;
+  email: string;
+  company: string;
+  employees: string;
+  message: string;
+}) => {
+  try {
+    const response = await api.post("/contact/enterprise", formData);
+    return response.data;
+  } catch (error) {
+    console.error("Error sending enterprise request:", error);
+    throw new Error("Failed to send enterprise request");
+  }
 };
