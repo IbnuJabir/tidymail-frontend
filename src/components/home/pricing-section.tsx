@@ -397,6 +397,7 @@ export default function PricingSection() {
                 <Input
                   id="employees"
                   name="employees"
+                  type="number"
                   value={formData.employees}
                   onChange={handleInputChange}
                   required
