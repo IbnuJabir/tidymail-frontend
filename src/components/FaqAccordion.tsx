@@ -25,17 +25,27 @@ const faqs = [
   {
     question: "How does unsubscribing work?",
     answer:
-      "TidyMail simplifies the unsubscribe process with our one-click solution. When you choose to unsubscribe, our system handles the entire process securely in the background, so you don't have to visit multiple websites or fill out forms. The service complies with email marketing standards to ensure your preferences are properly registered with senders.",
+      "TidyMail simplifies the unsubscribe process with a one-click solution. When you choose to unsubscribe, our system securely handles the entire process in the background—no need to visit multiple websites or fill out forms. Once unsubscribed, you'll stop receiving unwanted emails, helping you keep your inbox clean and clutter-free.",
   },
   {
     question: "Is there a limit to how many emails I can manage?",
     answer:
-      "Our free plan allows you to manage up to 1,000 emails and 50 subscriptions. Premium plans offer unlimited email management.",
+      "Yes, limits depend on your plan. The Free plan allows you to trash up to 500 emails, permanently delete up to 300 emails, and unsubscribe from 5 subscriptions per month. The Pro plan increases those limits to 8,000 trashed emails, 5,000 permanent deletes, and 500 unsubscriptions per month. The Business plan offers unlimited trash, permanent deletes, and unsubscriptions.",
+  },
+  {
+    question: "How do I contact support?",
+    answer:
+      "You can contact our support team through the form in the 'Contact' section of our website, or by emailing us directly at tidymailsupport@ibnujabir.tech. We aim to respond within 24 hours.",
+  },
+  {
+    question: "Can I cancel my subscription?",
+    answer:
+      "Yes, you can cancel your subscription anytime through your Dashboard’s billing section. Your subscription will remain active until the end of your current billing cycle.",
   },
   {
     question: "Can I recover deleted emails?",
     answer:
-      "Emails moved to trash can be recovered within your email provider's trash retention period. Permanently deleted emails cannot be recovered.",
+      "Emails moved to trash can be recovered within your email provider’s trash retention period. However, permanently deleted emails cannot be recovered.",
   },
 ];
 
@@ -43,7 +53,7 @@ const FaqAccordion = () => {
   return (
     <Accordion type="single" collapsible className="w-full">
       {faqs.map((faq, index) => (
-        <AccordionItem key={index} value={`item-${index}`} className="cursor-pointer">
+        <AccordionItem key={index} value={`item-${index}`}>
           <AccordionTrigger className="text-left text-lg font-semibold">
             {faq.question}
           </AccordionTrigger>
