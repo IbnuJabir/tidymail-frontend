@@ -32,7 +32,7 @@ export default function DashboardNotFound() {
       <h1 className="mt-8 text-4xl font-bold tracking-tighter sm:text-5xl">404</h1>
       <p className="mt-4 text-xl text-muted-foreground sm:text-2xl">{randomMessage}</p>
       <p className="mt-2 text-muted-foreground">
-        The page you're looking for doesn't exist or you don't have access to it.
+        The page you&apos;re looking for doesn&apos;t exist or you don&apos;t have access to it.
       </p>
       <div className="mt-8 flex flex-col gap-2 sm:flex-row">
         <Button asChild size="lg" className="gap-2">
