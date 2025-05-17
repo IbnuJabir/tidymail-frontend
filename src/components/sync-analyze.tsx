@@ -75,6 +75,10 @@ export default function SyncButton() {
         }, 100);
       } else {
         setCurrentBatch({ pageToken: null, isProcessing: false });
+        getSubscriptions();
+        toast.success("Analysis Completed!", {
+          description: `Processed ${analysisProgress.totalProcessed} emails and found ${analysisProgress.totalNewSubscriptions} new subscriptions.`,
+        });
       }
     },
     onError: (error: Error) => {
@@ -84,6 +88,11 @@ export default function SyncButton() {
         error: error.message,
       }));
       setCurrentBatch({ pageToken: null, isProcessing: false });
+      toast.error("Failed to Analyze your subsbscription", {
+              description:
+                (error as { response?: { data?: { detail?: string } } })?.response?.data?.detail ||
+                (error instanceof Error ? error.message : "An unknown error occurred"),
+            });
     },
   });
 
@@ -110,17 +119,6 @@ export default function SyncButton() {
     setOpen(false);
   };
 
-  if (analysisProgress.error) {
-    toast.error("Analysis Failed", {
-      description: `Error: ${analysisProgress.error}. Please try again.`,
-    });
-  }
-  if (analysisProgress.isComplete) {
-    getSubscriptions();
-    toast.success("Analysis Complete", {
-      description: `Processed ${analysisProgress.totalProcessed} emails and found ${analysisProgress.totalNewSubscriptions} new subscriptions.`,
-    });
-  }
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>

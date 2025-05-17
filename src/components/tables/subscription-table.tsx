@@ -136,7 +136,8 @@ export function SubscriptionTable() {
     onError: (error) => {
       toast.error("Failed to unsubscribe", {
         description:
-          error instanceof Error ? error.message : "An unknown error occurred",
+          (error as { response?: { data?: { detail?: string } } })?.response?.data?.detail ||
+          (error instanceof Error ? error.message : "An unknown error occurred"),
       });
     },
   });
@@ -161,7 +162,8 @@ export function SubscriptionTable() {
     onError: (error) => {
       toast.error("Failed to move to trash", {
         description:
-          error instanceof Error ? error.message : "An unknown error occurred",
+          (error as { response?: { data?: { detail?: string } } })?.response?.data?.detail ||
+          (error instanceof Error ? error.message : "An unknown error occurred"),
       });
     },
   });

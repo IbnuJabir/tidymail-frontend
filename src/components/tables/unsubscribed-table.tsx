@@ -141,7 +141,8 @@ export function UnsubscribedTable() {
     onError: (error) => {
       toast.error("Failed to subscribe back", {
         description:
-          error instanceof Error ? error.message : "An unknown error occurred",
+              (error as { response?: { data?: { detail?: string } } })?.response?.data?.detail ||
+              (error instanceof Error ? error.message : "An unknown error occurred"),
       });
     },
   });
@@ -166,7 +167,8 @@ export function UnsubscribedTable() {
     onError: (error) => {
       toast.error("Failed to move to trash", {
         description:
-          error instanceof Error ? error.message : "An unknown error occurred",
+                (error as { response?: { data?: { detail?: string } } })?.response?.data?.detail ||
+                (error instanceof Error ? error.message : "An unknown error occurred"),
       });
     },
   });
@@ -191,7 +193,8 @@ export function UnsubscribedTable() {
     onError: (error) => {
       toast.error("Failed to delete", {
         description:
-          error instanceof Error ? error.message : "An unknown error occurred",
+                (error as { response?: { data?: { detail?: string } } })?.response?.data?.detail ||
+                (error instanceof Error ? error.message : "An unknown error occurred"),
       });
     },
   });
