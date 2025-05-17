@@ -261,7 +261,7 @@ const checkout = async (plan_keys: string[]): Promise<CheckoutResponse> => {
   try {
     const response = await api.post("/subscription-plan/checkout", {
       plan_keys,
-      success_url: "http://localhost:3000/payment/success",
+      success_url: `${process.env.NEXT_PUBLIC_SUCCESS_URL}/payment/success`,
     });
     return response.data;
   } catch (error) {
