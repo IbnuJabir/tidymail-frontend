@@ -16,20 +16,23 @@ export default function SuccessCard() {
     const timer = setTimeout(() => {
       router.push("/dashboard")
     }, 5000)
-
+  
     const interval = setInterval(() => {
-      if (countdown <= 0) {
-        clearInterval(interval)
-        return
-      }
-      setCountdown((prev) => prev - 1)
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval)
+          return 0
+        }
+        return prev - 1
+      })
     }, 1000)
-
+  
     return () => {
       clearTimeout(timer)
       clearInterval(interval)
     }
   }, [router])
+  
 
   return (
     <Card className="w-full max-w-md border-primary/20 shadow-lg">
