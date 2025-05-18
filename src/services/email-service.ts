@@ -87,7 +87,7 @@ export async function analyzeSubscriptionParallel(
   try {
     // Process all batches in parallel
     const results = await Promise.all(
-      pageTokens.map((token) => analyzeSubscriptionBatch(token, batchSize))
+      pageTokens.map((token) => analyzeSubscriptionBatch(token, batchSize, true))
     );
 
     // Combine results
