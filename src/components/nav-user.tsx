@@ -84,7 +84,7 @@ export function NavUser(user: User) {
 
             <DropdownMenuSeparator />
 
-            {user?.subscription_plan === "free" && (
+            {user?.subscription_plan.toLowerCase()  === "free" && (
               <DropdownMenuGroup onClick={() => setIsPricingOpen(true)}>
                 <DropdownMenuItem>
                   <Sparkles className="mr-2 h-4 w-4" />
@@ -92,7 +92,7 @@ export function NavUser(user: User) {
                 </DropdownMenuItem>
               </DropdownMenuGroup>
             )}
-            {user?.subscription_plan === "pro" && (
+            {user?.subscription_plan.toLowerCase()  === "pro" && (
               <DropdownMenuGroup onClick={() => setIsPricingOpen(true)}>
                 <DropdownMenuItem>
                   <Sparkles className="mr-2 h-4 w-4" />
