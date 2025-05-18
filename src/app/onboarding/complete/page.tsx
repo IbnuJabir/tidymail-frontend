@@ -38,7 +38,7 @@ export default function CompletePage() {
   // Replace useQuery with useMutation
   const { mutate: processBatch, isPending: isProcessing } = useMutation({
     mutationFn: (pageToken: string | null) =>
-      analyzeSubscriptionBatch(pageToken, 100, true),
+      analyzeSubscriptionBatch(pageToken, 100),
     onSuccess: (data: AnalysisBatchResult) => {
       if (!data) return;
 
@@ -50,17 +50,7 @@ export default function CompletePage() {
         error: null,
       }));
 
-      if (
-        !data.data.is_complete &&
-        data.data.next_page_token &&
-        analysisProgress.totalProcessed < 200
-      ) {
-        setCurrentBatch({
-          pageToken: data.data.next_page_token,
-          isProcessing: true,
-        });
-        processBatch(data.data.next_page_token);
-      } else if (!data.data.is_complete && data.data.next_page_token) {
+      if (!data.data.is_complete && data.data.next_page_token) {
         setTimeout(() => {
           setCurrentBatch({
             pageToken: data.data.next_page_token,

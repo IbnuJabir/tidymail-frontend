@@ -43,7 +43,7 @@ export default function SyncButton() {
   // Replace useQuery with useMutation
   const { mutate: processBatch, isPending: isProcessing } = useMutation({
     mutationFn: (pageToken: string | null) =>
-      analyzeSubscriptionBatch(pageToken, 100, true),
+      analyzeSubscriptionBatch(pageToken, 100),
     onSuccess: (data: AnalysisBatchResult) => {
       if (!data) return;
 

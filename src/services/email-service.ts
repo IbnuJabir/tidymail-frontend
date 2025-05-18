@@ -46,7 +46,7 @@ export async function fetchEmails(): Promise<{
 export async function analyzeSubscriptionBatch(
   pageToken?: string | null,
   batchSize = 100, // Increased batch size for better performance
-  fresh_analysis?: boolean
+  // fresh_analysis?: boolean
 ): Promise<AnalysisBatchResult> {
   try {
     let url = "/subscription/analyze-subscriptions";
@@ -56,7 +56,7 @@ export async function analyzeSubscriptionBatch(
       params.append("page_token", pageToken);
     }
     params.append("batch_size", batchSize.toString());
-    params.append("fresh_analysis", "false");
+    params.append("fresh_analysis", "true");
     if (params.toString()) {
       url += `?${params.toString()}`;
     }
@@ -87,7 +87,7 @@ export async function analyzeSubscriptionParallel(
   try {
     // Process all batches in parallel
     const results = await Promise.all(
-      pageTokens.map((token) => analyzeSubscriptionBatch(token, batchSize, true))
+      pageTokens.map((token) => analyzeSubscriptionBatch(token, batchSize))
     );
 
     // Combine results
