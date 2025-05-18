@@ -56,7 +56,7 @@ export async function analyzeSubscriptionBatch(
       params.append("page_token", pageToken);
     }
     params.append("batch_size", batchSize.toString());
-    params.append("fresh_analysis", fresh_analysis ? "true" : "false");
+    params.append("fresh_analysis", "false");
     if (params.toString()) {
       url += `?${params.toString()}`;
     }
