@@ -69,10 +69,10 @@ export default function ContactSection() {
                   Our friendly team is here to help.
                 </p>
                 <a
-                  href="mailto:tidymailsupport@ibnujabir.tech"
+                  href="mailto:support@tidymail.email"
                   className="text-primary hover:underline mt-1 block"
                 >
-                  tidymailsupport@ibnujabir.tech
+                  support@tidymail.email
                 </a>
               </div>
             </div>

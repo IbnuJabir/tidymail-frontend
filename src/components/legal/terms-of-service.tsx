@@ -166,8 +166,8 @@ export function TermsOfService() {
               <h2 className="text-xl font-bold">Contact Us</h2>
               <p className="text-muted-foreground">
                 If you have any questions about these Terms, please contact us at:{" "}
-                <Link href="mailto:tidymailsupport@ibnujabir.tech" className="text-primary hover:underline">
-                  tidymailsupport@ibnujabir.tech
+                <Link href="mailto:support@tidymail.email" className="text-primary hover:underline">
+                  support@tidymail.email
                 </Link>
               </p>
             </section>

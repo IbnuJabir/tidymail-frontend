@@ -127,8 +127,8 @@ export function PrivacyPolicy() {
                   <li>We retain your data only as long as necessary to provide the service</li>
                   <li>
                     You can request deletion of your account and data at any time by contacting{" "}
-                    <Link href="mailto:tidymailsupport@ibnujabir.tech" className="text-primary hover:underline">
-                      tidymailsupport@ibnujabir.tech
+                    <Link href="mailto:support@tidymail.email" className="text-primary hover:underline">
+                      support@tidymail.email
                     </Link>
                   </li>
                   <li>Upon request, we&apos;ll permanently delete your data within a reasonable timeframe</li>
@@ -190,8 +190,8 @@ export function PrivacyPolicy() {
               </h2>
               <p className="text-muted-foreground">
                 If you have any questions about our Privacy Policy, please contact us at:{" "}
-                <Link href="mailto:tidymailsupport@ibnujabir.tech" className="text-primary hover:underline">
-                  tidymailsupport@ibnujabir.tech
+                <Link href="mailto:support@tidymail.email" className="text-primary hover:underline">
+                  support@tidymail.email
                 </Link>
               </p>
             </section>

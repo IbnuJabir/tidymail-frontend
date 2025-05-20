@@ -35,7 +35,7 @@ const faqs = [
   {
     question: "How do I contact support?",
     answer:
-      "You can contact our support team through the form in the 'Contact' section of our website, or by emailing us directly at tidymailsupport@ibnujabir.tech. We aim to respond within 24 hours.",
+      "You can contact our support team through the form in the 'Contact' section of our website, or by emailing us directly at support@tidymail.email. We aim to respond within 24 hours.",
   },
   {
     question: "Can I cancel my subscription?",
