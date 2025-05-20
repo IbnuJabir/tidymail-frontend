@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import dashboard from "@/assets/dashboard.png";
+import dashboard from "@/assets/dasboardlight.png";
 
 export default function HeroSection() {
   return (
