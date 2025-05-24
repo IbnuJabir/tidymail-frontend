@@ -352,3 +352,13 @@ export const sendEnterpriseRequest = async (formData: {
     throw new Error("Failed to send enterprise request");
   }
 };
+
+export async function fetchUsageStats(){
+  try {
+    const response = await api.get("/analytics/usage")
+    return response.data.usage
+  } catch (error) {
+    console.error("Error fetching usage stats:", error)
+    throw new Error("Failed to fetch usage stats data")
+  }
+}

@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Home, UserX } from "lucide-react";
+import { ChartColumn, Home, UserX } from "lucide-react";
 import { UserRound } from "lucide-react";
 import { NavUser } from "@/components/nav-user";
 import { TeamSwitcher } from "@/components/team-switcher";
@@ -19,6 +19,7 @@ import {
 import { usePathname } from "next/navigation";
 import { useUser } from "@/hooks/useAuth";
 import logo from "@/assets/logo-w.png";
+import { NavAccount } from "./nav-projects";
 
 const routes = [
   {
@@ -42,6 +43,23 @@ const routes = [
     href: "/unsubscribed",
   },
 ];
+const accountSetting = [
+  // {
+  //   name: "Account",
+  //   url: "/account",
+  //   icon: UserRound
+  // }, 
+  {
+    name: "Usage",
+    url: "/usage",
+    icon: ChartColumn
+  }, 
+  // {
+  //   name: "Setting",
+  //   url: "/setting",
+  //   icon: Settings
+  // }
+]
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
   const { data: user } = useUser();
@@ -72,6 +90,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarMenuItem>
           ))}
         </SidebarMenu>
+        <NavAccount accountSetting={accountSetting}/>
       </SidebarContent>
       <SidebarFooter>{user && <NavUser {...user} />}</SidebarFooter>
       <SidebarRail />
