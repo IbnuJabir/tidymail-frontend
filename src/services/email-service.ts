@@ -249,7 +249,7 @@ export async function subscribeBack(email: string) {
 
 export async function fetchEmailAnalytics(): Promise<EmailAnalyticsResponse> {
   try {
-    const response = await api.get<EmailAnalyticsResponse>("/analytics");
+    const response = await api.get<EmailAnalyticsResponse>("/analytics/");
     return response.data;
   } catch (error) {
     console.error("Error fetching email analytics:", error);

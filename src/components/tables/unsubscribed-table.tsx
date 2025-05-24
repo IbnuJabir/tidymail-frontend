@@ -600,7 +600,7 @@ export function UnsubscribedTable() {
           <div className="relative flex-1 min-w-[200px] sm:w-64 md:w-80">
             <Input
               type="text"
-              placeholder="Search subscriptions..."
+            placeholder="Search by name, email, domain ..."
               className="pr-16" // Make room for the buttons
               value={searchInput}
               onChange={handleSearchInputChange}
