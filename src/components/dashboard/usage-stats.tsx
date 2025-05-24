@@ -203,7 +203,7 @@ export function UsagePage({ usageStat, onRefresh }: UsagePageProps) {
         <Alert variant="destructive">
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription>
-            You're approaching or have exceeded some usage limits. Consider
+            You&apos;re approaching or have exceeded some usage limits. Consider
             upgrading your plan for unlimited access.
           </AlertDescription>
         </Alert>
