@@ -171,14 +171,14 @@ export default function PricingModal({
                     Perfect for personal use
                   </p>
                   <div className="mt-4 flex items-baseline text-4xl font-extrabold">
-                    ${isYearly ? "4.99" : "6.99"}
+                    ${isYearly ? "5.03" : "6.99"}
                     <span className="ml-1 text-lg font-medium text-muted-foreground">
                       /month
                     </span>
                   </div>
                   {isYearly && (
                     <p className="text-sm text-muted-foreground mt-2">
-                      Billed annually (${4.99 * 12}/year)
+                      Billed annually (${5.03 * 12}/year)
                     </p>
                   )}
                 </CardHeader>
@@ -186,7 +186,7 @@ export default function PricingModal({
                   <ul className="space-y-3">
                     <li className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                      <span>Full analysis of subscriptions</span>
+                      <span>10 Full analysis of subscriptions per month</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
@@ -238,14 +238,14 @@ export default function PricingModal({
                     Perfect for teams and businesses
                   </p>
                   <div className="mt-4 flex items-baseline text-4xl font-extrabold">
-                    ${isYearly ? "14.99" : "19.99"}
+                    ${isYearly ? "6.47" : "8.99"}
                     <span className="ml-1 text-lg font-medium text-muted-foreground">
                       /month
                     </span>
                   </div>
                   {isYearly && (
                     <p className="text-sm text-muted-foreground mt-2">
-                      Billed annually (${14.99 * 12}/year)
+                      Billed annually (${6.47 * 12}/year)
                     </p>
                   )}
                 </CardHeader>
@@ -253,7 +253,7 @@ export default function PricingModal({
                   <ul className="space-y-3">
                     <li className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                      <span>Unlimited subscription analysis</span>
+                      <span>30 subscription analysis/month</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />

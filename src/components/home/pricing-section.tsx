@@ -60,7 +60,7 @@ export default function PricingSection() {
     });
   };
 
- const enterpriseMutation = useSendEnterpriseRequest();
+  const enterpriseMutation = useSendEnterpriseRequest();
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -86,7 +86,6 @@ export default function PricingSection() {
       });
     }
   };
-  
 
   return (
     <section id="pricing" className="py-20">
@@ -149,7 +148,7 @@ export default function PricingSection() {
               <ul className="space-y-3">
                 <li className="flex items-start gap-3">
                   <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                  <span>Full analysis of subscriptions</span>
+                  <span>2 Full analysis of subscriptions per month</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
@@ -199,14 +198,14 @@ export default function PricingSection() {
               <CardTitle className="text-xl">Pro</CardTitle>
               <CardDescription>Perfect for personal use</CardDescription>
               <div className="mt-4 flex items-baseline text-5xl font-extrabold">
-                ${isYearly ? "4.99" : "6.99"}
+                ${isYearly ? "5.03" : "6.99"}
                 <span className="ml-1 text-xl font-medium text-muted-foreground">
                   /month
                 </span>
               </div>
               {isYearly && (
                 <p className="text-sm text-muted-foreground mt-2">
-                  Billed annually (${4.99 * 12}/year)
+                  Billed annually (${5.03 * 12}/year)
                 </p>
               )}
             </CardHeader>
@@ -214,7 +213,7 @@ export default function PricingSection() {
               <ul className="space-y-3">
                 <li className="flex items-start gap-3">
                   <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                  <span>Full analysis of subscriptions</span>
+                  <span>10 Full analysis of subscriptions/month</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
@@ -257,14 +256,14 @@ export default function PricingSection() {
                 Perfect for teams and businesses
               </CardDescription>
               <div className="mt-4 flex items-baseline text-5xl font-extrabold">
-                ${isYearly ? "14.99" : "19.99"}
+                ${isYearly ? "6.47" : "8.99"}
                 <span className="ml-1 text-xl font-medium text-muted-foreground">
                   /month
                 </span>
               </div>
               {isYearly && (
                 <p className="text-sm text-muted-foreground mt-2">
-                  Billed annually (${14.99 * 12}/year)
+                  Billed annually (${6.47 * 12}/year)
                 </p>
               )}
             </CardHeader>
@@ -272,7 +271,7 @@ export default function PricingSection() {
               <ul className="space-y-3">
                 <li className="flex items-start gap-3">
                   <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                  <span>Unlimited subscription analysis</span>
+                  <span>30 subscription analysis/month</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
