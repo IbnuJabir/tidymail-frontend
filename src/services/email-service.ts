@@ -49,14 +49,13 @@ export async function analyzeSubscriptionBatch(
   // fresh_analysis?: boolean
 ): Promise<AnalysisBatchResult> {
   try {
-    let url = "/subscription/analyze-subscriptions";
+    let url = "/email-analysis/analyze-subscriptions";
     // Add query parameters if provided
     const params = new URLSearchParams();
     if (pageToken) {
       params.append("page_token", pageToken);
     }
     params.append("batch_size", batchSize.toString());
-    params.append("fresh_analysis", "true");
     if (params.toString()) {
       url += `?${params.toString()}`;
     }
