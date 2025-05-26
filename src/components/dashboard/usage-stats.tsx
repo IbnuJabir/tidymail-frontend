@@ -361,10 +361,12 @@ export function UsagePage({ usageStat, onRefresh }: UsagePageProps) {
                   <span className="text-muted-foreground">Started</span>
                   <span>{formatDate(subscription.starts_at)}</span>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Renews</span>
-                  <span>{formatDate(subscription.renews_at)}</span>
-                </div>
+                {subscription.renews_at && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Renews</span>
+                    <span>{formatDate(subscription.renews_at)}</span>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
