@@ -1,5 +1,5 @@
 "use client";
-import { CheckCircle, X } from "lucide-react";
+import { CheckCircle, X, MapPin } from "lucide-react";
 import type React from "react";
 
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/card";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
-import { useState } from "react";
+import { useState, useEffect } from "react"
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import {
@@ -29,10 +29,24 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { sendEnterpriseRequest } from "@/services/email-service";
 import { useMutation } from "@tanstack/react-query";
+import { symbols } from "@/lib/constants";
+
+interface ExchangeRates {
+  [key: string]: number
+}
+
+interface LocationData {
+  country: string
+  currency: string
+}
 
 export default function PricingSection() {
   const [isYearly, setIsYearly] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [userCurrency, setUserCurrency] = useState("USD");
+  const [exchangeRates, setExchangeRates] = useState<ExchangeRates>({});
+  const [isLoadingCurrency, setIsLoadingCurrency] = useState(true);
+  const [locationData, setLocationData] = useState<LocationData | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -40,6 +54,84 @@ export default function PricingSection() {
     employees: "",
     message: "",
   });
+
+  // Get user's location then convert => currency
+  useEffect(() => {
+    const detectCurrencyFromIP = async () => {
+      try {
+        // Fallback: use IP-based location detection
+        const response = await fetch("https://ipapi.co/json/")
+        const data = await response.json()
+        const currency = data.currency || "USD"
+
+        setLocationData({
+          country: data.country_name || "Unknown",
+          currency: currency,
+        })
+        setUserCurrency(currency)
+      } catch (error) {
+        console.error("Error detecting currency from IP:", error)
+        setUserCurrency("USD")
+      } finally {
+        setIsLoadingCurrency(false)
+      }
+    }
+
+    detectCurrencyFromIP()
+  }, [])
+
+  // Fetch exchange rates Then convert usd to User's X coin
+  useEffect(() => {
+    const fetchExchangeRates = async () => {
+      if (userCurrency === "USD") {
+        setExchangeRates({ USD: 1 })
+        return
+      }
+
+      try {
+        // freeware api i found that even works without api keys
+        // price updates every 24h
+        const response = await fetch("https://open.er-api.com/v6/latest/USD")
+        const data = await response.json()
+
+        if (data.rates) {
+          setExchangeRates(data.rates)
+        }
+      } catch (error) {
+        console.error("Error fetching exchange rates:", error)
+        toast.error("Failed to load currency rates", {
+          description: "Prices will be shown in USD",
+        })
+        setUserCurrency("USD")
+        setExchangeRates({ USD: 1 })
+      }
+    }
+
+    if (userCurrency && !isLoadingCurrency) {
+      fetchExchangeRates()
+    }
+  }, [userCurrency, isLoadingCurrency]);
+
+  // Convert USD to user currency
+  const convertPrice = (usdPrice: number): string => {
+    if (userCurrency === "USD" || !exchangeRates[userCurrency]) {
+      return usdPrice.toFixed(2)
+    }
+
+    const convertedPrice = usdPrice * exchangeRates[userCurrency]
+
+    // Format based on currency
+    if (["JPY", "KRW", "VND", "IDR"].includes(userCurrency)) {
+      return Math.round(convertedPrice).toString()
+    }
+
+    return convertedPrice.toFixed(2)
+  };
+
+  // Get currency symbol
+  const getCurrencySymbol = (currency: string): string => {
+    return symbols[currency] || currency + " "
+  };
 
   const useSendEnterpriseRequest = () => {
     return useMutation({
@@ -87,6 +179,8 @@ export default function PricingSection() {
     }
   };
 
+  const currencySymbol = getCurrencySymbol(userCurrency);
+
   return (
     <section id="pricing" className="py-20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
@@ -97,6 +191,15 @@ export default function PricingSection() {
           <p className="mt-4 text-lg text-muted-foreground">
             Choose the plan that&apos;s right for you.
           </p>
+          {/* Show Country name + Currency name using api data */}
+          {locationData && !isLoadingCurrency && (
+            <div className="flex items-center justify-center mt-4 text-sm text-muted-foreground">
+              <MapPin className="h-4 w-4 mr-1" />
+              <span>
+                Prices shown in {userCurrency} for {locationData.country}
+              </span>
+            </div>
+          )}
 
           <div className="flex items-center justify-center mt-8">
             <Label
@@ -138,10 +241,17 @@ export default function PricingSection() {
               <CardTitle className="text-xl">Free</CardTitle>
               <CardDescription>Perfect for getting started</CardDescription>
               <div className="mt-4 flex items-baseline text-5xl font-extrabold">
-                $0
-                <span className="ml-1 text-xl font-medium text-muted-foreground">
-                  /month
-                </span>
+                {isLoadingCurrency ? (
+                  <div className="animate-pulse bg-gray-200 h-12 w-20 rounded"></div>
+                ) : (
+                  <>
+                    {currencySymbol}
+                    {0}
+                    <span className="ml-1 text-xl font-medium text-muted-foreground">
+                      /month
+                    </span>
+                  </>
+                )}
               </div>
             </CardHeader>
             <CardContent className="flex-grow">
@@ -198,14 +308,22 @@ export default function PricingSection() {
               <CardTitle className="text-xl">Pro</CardTitle>
               <CardDescription>Perfect for personal use</CardDescription>
               <div className="mt-4 flex items-baseline text-5xl font-extrabold">
-                ${isYearly ? "5.03" : "6.99"}
-                <span className="ml-1 text-xl font-medium text-muted-foreground">
-                  /month
-                </span>
+                {isLoadingCurrency ? (
+                  <div className="animate-pulse bg-gray-200 h-12 w-32 rounded"></div>
+                ) : (
+                  <>
+                    {currencySymbol}
+                    {convertPrice(isYearly ? 5.03 : 6.99)}
+                    <span className="ml-1 text-xl font-medium text-muted-foreground">
+                      /month
+                    </span>
+                  </>
+                )}
               </div>
-              {isYearly && (
+              {isYearly && !isLoadingCurrency && (
                 <p className="text-sm text-muted-foreground mt-2">
-                  Billed annually (${5.03 * 12}/year)
+                  Billed annually ({currencySymbol}
+                  {convertPrice(5.03 * 12)}/year)
                 </p>
               )}
             </CardHeader>
@@ -256,14 +374,22 @@ export default function PricingSection() {
                 Perfect for teams and businesses
               </CardDescription>
               <div className="mt-4 flex items-baseline text-5xl font-extrabold">
-                ${isYearly ? "6.47" : "8.99"}
-                <span className="ml-1 text-xl font-medium text-muted-foreground">
-                  /month
-                </span>
+                {isLoadingCurrency ? (
+                  <div className="animate-pulse bg-gray-200 h-12 w-32 rounded"></div>
+                ) : (
+                  <>
+                    {currencySymbol}
+                    {convertPrice(isYearly ? 6.47 : 8.99)}
+                    <span className="ml-1 text-xl font-medium text-muted-foreground">
+                      /month
+                    </span>
+                  </>
+                )}
               </div>
-              {isYearly && (
+              {isYearly && !isLoadingCurrency && (
                 <p className="text-sm text-muted-foreground mt-2">
-                  Billed annually (${6.47 * 12}/year)
+                  Billed annually ({currencySymbol}
+                  {convertPrice(6.47 * 12)}/year)
                 </p>
               )}
             </CardHeader>
