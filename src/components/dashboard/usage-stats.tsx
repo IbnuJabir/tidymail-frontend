@@ -273,7 +273,7 @@ export function UsagePage({ usageStat, onRefresh }: UsagePageProps) {
                               </span>
                             )}
                             {limits.is_unlimited && (
-                              <span className="text-green-600 ml-1">∞</span>
+                              <span className="text-green-600 ml-1">/∞</span>
                             )}
                           </div>
                           {!limits.is_unlimited && item.limit !== -1 && (
@@ -361,10 +361,12 @@ export function UsagePage({ usageStat, onRefresh }: UsagePageProps) {
                   <span className="text-muted-foreground">Started</span>
                   <span>{formatDate(subscription.starts_at)}</span>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Renews</span>
-                  <span>{formatDate(subscription.renews_at)}</span>
-                </div>
+                {subscription.renews_at && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Renews</span>
+                    <span>{formatDate(subscription.renews_at)}</span>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -437,7 +439,7 @@ export function UsagePage({ usageStat, onRefresh }: UsagePageProps) {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3 text-sm text-muted-foreground">
-              <p>• Usage limits reset on the 1st of each month</p>
+              <p>• Usage limits reset on subscription start date of each month</p>
               <p>• Bulk actions count as single operations</p>
               <p>• Analysis runs help optimize your email management</p>
               {!limits.is_unlimited && (

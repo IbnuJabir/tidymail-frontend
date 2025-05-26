@@ -66,7 +66,8 @@ export default function CompletePage() {
       console.error("Error processing batch:", error);
       setAnalysisProgress((prev) => ({
         ...prev,
-        error: error.message,
+        error: (error as { response?: { data?: { detail?: string } } })?.response?.data?.detail ||
+                (error instanceof Error ? error.message : "An unknown error occurred"),
       }));
       setCurrentBatch({ pageToken: null, isProcessing: false });
     },
