@@ -1,6 +1,6 @@
 "use client";
-import { useState } from "react";
-import { CheckCircle, Loader, Loader2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { CheckCircle, Loader, Loader2, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -26,6 +26,16 @@ import {
 } from "@/components/ui/card";
 import { sendEnterpriseRequest, useCheckout } from "@/services/email-service";
 import { useMutation } from "@tanstack/react-query";
+import { symbols } from "@/lib/constants";
+
+interface ExchangeRates {
+  [key: string]: number
+}
+
+interface LocationData {
+  country: string
+  currency: string
+}
 
 interface PricingModalProps {
   open: boolean;
@@ -38,6 +48,10 @@ export default function PricingModal({
 }: PricingModalProps) {
   const [isYearly, setIsYearly] = useState(false);
   const [activeTab, setActiveTab] = useState("plans");
+  const [userCurrency, setUserCurrency] = useState("USD");
+  const [exchangeRates, setExchangeRates] = useState<ExchangeRates>({});
+  const [isLoadingCurrency, setIsLoadingCurrency] = useState(true);
+  const [locationData, setLocationData] = useState<LocationData | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -45,6 +59,84 @@ export default function PricingModal({
     employees: "",
     message: "",
   });
+
+  // Get user's location then convert => currency
+  useEffect(() => {
+    const detectCurrencyFromIP = async () => {
+      try {
+        // Fallback: use IP-based location detection
+        const response = await fetch("https://ipapi.co/json/")
+        const data = await response.json()
+        const currency = data.currency || "USD"
+
+        setLocationData({
+          country: data.country_name || "Unknown",
+          currency: currency,
+        })
+        setUserCurrency(currency)
+      } catch (error) {
+        console.error("Error detecting currency from IP:", error)
+        setUserCurrency("USD")
+      } finally {
+        setIsLoadingCurrency(false)
+      }
+    }
+
+    detectCurrencyFromIP()
+  }, [])
+
+  // Fetch exchange rates Then convert usd to User's X coin
+  useEffect(() => {
+    const fetchExchangeRates = async () => {
+      if (userCurrency === "USD") {
+        setExchangeRates({ USD: 1 })
+        return
+      }
+
+      try {
+        // freeware api i found that even works without api keys
+        // price updates every 24h
+        const response = await fetch("https://open.er-api.com/v6/latest/USD")
+        const data = await response.json()
+
+        if (data.rates) {
+          setExchangeRates(data.rates)
+        }
+      } catch (error) {
+        console.error("Error fetching exchange rates:", error)
+        toast.error("Failed to load currency rates", {
+          description: "Prices will be shown in USD",
+        })
+        setUserCurrency("USD")
+        setExchangeRates({ USD: 1 })
+      }
+    }
+
+    if (userCurrency && !isLoadingCurrency) {
+      fetchExchangeRates()
+    }
+  }, [userCurrency, isLoadingCurrency]);
+
+  // Convert USD to user currency
+  const convertPrice = (usdPrice: number): string => {
+    if (userCurrency === "USD" || !exchangeRates[userCurrency]) {
+      return usdPrice.toFixed(2)
+    }
+
+    const convertedPrice = usdPrice * exchangeRates[userCurrency]
+
+    // Format based on currency
+    if (["JPY", "KRW", "VND", "IDR"].includes(userCurrency)) {
+      return Math.round(convertedPrice).toString()
+    }
+
+    return convertedPrice.toFixed(2)
+  };
+
+  // Get currency symbol
+  const getCurrencySymbol = (currency: string): string => {
+    return symbols[currency] || currency + " ";
+  };
 
   const useSendEnterpriseRequest = () => {
     return useMutation({
@@ -99,6 +191,8 @@ export default function PricingModal({
     checkoutMutation.mutate(plan_key);
   };
 
+  const currencySymbol = getCurrencySymbol(userCurrency);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[900px] p-6 max-h-[90vh] overflow-y-auto">
@@ -108,6 +202,15 @@ export default function PricingModal({
           </DialogTitle>
           <DialogDescription className="text-center text-lg">
             Choose the plan that&apos;s right for you.
+            {/* Show Country name + Currency name using api data */}
+            {locationData && !isLoadingCurrency && (
+              <div className="flex items-center justify-center mt-4 text-sm text-muted-foreground">
+                <MapPin className="h-4 w-4 mr-1" />
+                <span>
+                  Prices shown in {userCurrency} for {locationData.country}
+                </span>
+              </div>
+            )}
           </DialogDescription>
         </DialogHeader>
 
@@ -171,14 +274,22 @@ export default function PricingModal({
                     Perfect for personal use
                   </p>
                   <div className="mt-4 flex items-baseline text-4xl font-extrabold">
-                    ${isYearly ? "5.03" : "6.99"}
-                    <span className="ml-1 text-lg font-medium text-muted-foreground">
-                      /month
-                    </span>
+                    {isLoadingCurrency ? (
+                      <div className="animate-pulse bg-gray-200 h-12 w-32 rounded"></div>
+                    ) : (
+                      <>
+                        {currencySymbol}
+                        {convertPrice(isYearly ? 5.03 : 6.99)}
+                        <span className="ml-1 text-lg font-medium text-muted-foreground">
+                          /month
+                        </span>
+                      </>
+                    )}
                   </div>
-                  {isYearly && (
+                  {isYearly && !isLoadingCurrency && (
                     <p className="text-sm text-muted-foreground mt-2">
-                      Billed annually (${5.03 * 12}/year)
+                      Billed annually ({currencySymbol}
+                      {convertPrice(5.03 * 12)}/year)
                     </p>
                   )}
                 </CardHeader>
@@ -238,16 +349,24 @@ export default function PricingModal({
                     Perfect for teams and businesses
                   </p>
                   <div className="mt-4 flex items-baseline text-4xl font-extrabold">
-                    ${isYearly ? "6.47" : "8.99"}
+                {isLoadingCurrency ? (
+                  <div className="animate-pulse bg-gray-200 h-12 w-32 rounded"></div>
+                ) : (
+                  <>
+                    {currencySymbol}
+                    {convertPrice(isYearly ? 6.47 : 8.99)}
                     <span className="ml-1 text-lg font-medium text-muted-foreground">
                       /month
                     </span>
-                  </div>
-                  {isYearly && (
-                    <p className="text-sm text-muted-foreground mt-2">
-                      Billed annually (${6.47 * 12}/year)
-                    </p>
-                  )}
+                  </>
+                )}
+              </div>
+              {isYearly && !isLoadingCurrency && (
+                <p className="text-sm text-muted-foreground mt-2">
+                  Billed annually ({currencySymbol}
+                  {convertPrice(6.47 * 12)}/year)
+                </p>
+              )}
                 </CardHeader>
                 <CardContent className="flex-grow">
                   <ul className="space-y-3">
