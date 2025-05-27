@@ -253,19 +253,19 @@ export function SubscriptionTable() {
   }, [setSearch, setPage]);
 
   const handlePaginationChange = React.useCallback(
-    async (updater: Updater<PaginationState>) => {
-      const currentPagination: PaginationState = {
-        pageIndex: (page || 1) - 1,
-        pageSize: pageSize || 10,
-      };
-
-      const newPagination =
-        typeof updater === "function" ? updater(currentPagination) : updater;
-
-      await setPage(newPagination.pageIndex + 1);
-      await setPageSize(newPagination.pageSize);
+    (updater: Updater<PaginationState>) => {
+      // Let the useDataTable hook handle the pagination change
+      // It will automatically update the URL state
+      if (typeof updater === "function") {
+        const currentPagination: PaginationState = {
+          pageIndex: (page || 1) - 1,
+          pageSize: pageSize || 10,
+        };
+        const newPagination = updater(currentPagination);
+        // The useDataTable hook will handle the URL updates
+      }
     },
-    [page, pageSize, setPage, setPageSize]
+    [page, pageSize]
   );
 
   // Reset keepStarred when dialog opens
@@ -533,7 +533,7 @@ export function SubscriptionTable() {
     data: data?.data || [],
     columns,
     pageCount: totalPages,
-    onPaginationChange: handlePaginationChange,
+    // onPaginationChange: handlePaginationChange,
     onSortingChange: handleSortingChange,
     initialState: {
       pagination: {

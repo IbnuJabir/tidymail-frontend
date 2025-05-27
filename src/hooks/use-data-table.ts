@@ -48,10 +48,10 @@ export function useDataTable<TData, TValue>({
   initialState,
   getRowId,
 }: UseDataTableProps<TData, TValue>) {
-  // URL state management
+  // URL state management - using 1-based pagination for URL
   const [page, setPage] = useQueryState(
     "page",
-    parseAsInteger.withDefault(initialState?.pagination?.pageIndex ?? 0)
+    parseAsInteger.withDefault(initialState?.pagination?.pageIndex ? initialState.pagination.pageIndex + 1 : 1)
   );
   
   const [pageSize, setPageSize] = useQueryState(
@@ -76,11 +76,11 @@ export function useDataTable<TData, TValue>({
   );
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
 
-  // Convert URL parameters to table state
+  // Convert URL parameters to table state (0-based for table)
   const pagination = React.useMemo(
     () => ({
-      pageIndex: page,
-      pageSize: pageSize,
+      pageIndex: Math.max(0, (page || 1) - 1), // Convert 1-based to 0-based
+      pageSize: pageSize || 10,
     }),
     [page, pageSize]
   );
@@ -96,15 +96,19 @@ export function useDataTable<TData, TValue>({
   // Handle pagination changes
   const handlePaginationChange = React.useCallback(
     (updater: PaginationState | ((state: PaginationState) => PaginationState)) => {
-      if (typeof updater === "function") {
-        const newPagination = updater(pagination);
-        setPage(newPagination.pageIndex);
-        setPageSize(newPagination.pageSize);
-        onPaginationChange?.(newPagination);
-      } else {
-        setPage(updater.pageIndex);
-        setPageSize(updater.pageSize);
-        onPaginationChange?.(updater);
+      const newPagination = typeof updater === "function" ? updater(pagination) : updater;
+      
+      // Convert 0-based pageIndex to 1-based page for URL
+      const newPage = newPagination.pageIndex + 1;
+      const newPageSize = newPagination.pageSize;
+      
+      // Update URL state
+      setPage(newPage);
+      setPageSize(newPageSize);
+      
+      // Call external handler if it was passed
+      if (onPaginationChange) {
+        onPaginationChange(newPagination);
       }
     },
     [pagination, setPage, setPageSize, onPaginationChange]
@@ -113,25 +117,19 @@ export function useDataTable<TData, TValue>({
   // Handle sorting changes
   const handleSortingChange = React.useCallback(
     (updater: SortingState | ((state: SortingState) => SortingState)) => {
-      if (typeof updater === "function") {
-        const newSorting = updater(sorting);
-        if (newSorting.length > 0) {
-          setSortField(newSorting[0].id);
-          setSortOrder(newSorting[0].desc ? "desc" : "asc");
-        } else {
-          setSortField(null);
-          setSortOrder(null);
-        }
-        onSortingChange?.(newSorting);
+      const newSorting = typeof updater === "function" ? updater(sorting) : updater;
+      
+      if (newSorting.length > 0) {
+        setSortField(newSorting[0].id);
+        setSortOrder(newSorting[0].desc ? "desc" : "asc");
       } else {
-        if (updater.length > 0) {
-          setSortField(updater[0].id);
-          setSortOrder(updater[0].desc ? "desc" : "asc");
-        } else {
-          setSortField(null);
-          setSortOrder(null);
-        }
-        onSortingChange?.(updater);
+        setSortField(null);
+        setSortOrder(null);
+      }
+      
+      // Call external handler if provided
+      if (onSortingChange) {
+        onSortingChange(newSorting);
       }
     },
     [sorting, setSortField, setSortOrder, onSortingChange]
