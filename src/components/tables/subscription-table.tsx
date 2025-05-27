@@ -29,7 +29,6 @@ import type {
   Column,
   ColumnDef,
   SortingState,
-  PaginationState,
   Updater,
 } from "@tanstack/react-table";
 import {
@@ -63,7 +62,7 @@ export function SubscriptionTable() {
     parseAsString.withDefault("")
   );
   const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(1));
-  const [pageSize, setPageSize] = useQueryState(
+  const [pageSize, ] = useQueryState(
     "limit",
     parseAsInteger.withDefault(10)
   );
@@ -252,21 +251,21 @@ export function SubscriptionTable() {
     await setPage(1);
   }, [setSearch, setPage]);
 
-  const handlePaginationChange = React.useCallback(
-    (updater: Updater<PaginationState>) => {
-      // Let the useDataTable hook handle the pagination change
-      // It will automatically update the URL state
-      if (typeof updater === "function") {
-        const currentPagination: PaginationState = {
-          pageIndex: (page || 1) - 1,
-          pageSize: pageSize || 10,
-        };
-        const newPagination = updater(currentPagination);
-        // The useDataTable hook will handle the URL updates
-      }
-    },
-    [page, pageSize]
-  );
+  // const handlePaginationChange = React.useCallback(
+  //   (updater: Updater<PaginationState>) => {
+  //     // Let the useDataTable hook handle the pagination change
+  //     // It will automatically update the URL state
+  //     if (typeof updater === "function") {
+  //       const currentPagination: PaginationState = {
+  //         pageIndex: (page || 1) - 1,
+  //         pageSize: pageSize || 10,
+  //       };
+  //       const newPagination = updater(currentPagination);
+  //       // The useDataTable hook will handle the URL updates
+  //     }
+  //   },
+  //   [page, pageSize]
+  // );
 
   // Reset keepStarred when dialog opens
   React.useEffect(() => {
