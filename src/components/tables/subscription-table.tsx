@@ -29,7 +29,6 @@ import type {
   Column,
   ColumnDef,
   SortingState,
-  PaginationState,
   Updater,
 } from "@tanstack/react-table";
 import {
@@ -63,7 +62,7 @@ export function SubscriptionTable() {
     parseAsString.withDefault("")
   );
   const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(1));
-  const [pageSize, _] = useQueryState(
+  const [pageSize, ] = useQueryState(
     "limit",
     parseAsInteger.withDefault(10)
   );
