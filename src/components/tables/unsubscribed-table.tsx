@@ -28,7 +28,6 @@ import { Switch } from "@/components/ui/switch";
 import type {
   Column,
   ColumnDef,
-  PaginationState,
   Updater,
   SortingState,
 } from "@tanstack/react-table";
@@ -61,7 +60,7 @@ export function UnsubscribedTable() {
     parseAsString.withDefault("")
   );
   const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(1));
-  const [pageSize, setPageSize] = useQueryState(
+  const [pageSize ] = useQueryState(
     "limit",
     parseAsInteger.withDefault(10)
   );
@@ -264,22 +263,6 @@ export function UnsubscribedTable() {
     await setSearch("");
     await setPage(1);
   }, [setSearch, setPage]);
-
-  // const handlePaginationChange = React.useCallback(
-  //   async (updater: Updater<PaginationState>) => {
-  //     const currentPagination: PaginationState = {
-  //       pageIndex: (page || 1) - 1,
-  //       pageSize: pageSize || 10,
-  //     };
-
-  //     const newPagination =
-  //       typeof updater === "function" ? updater(currentPagination) : updater;
-
-  //     await setPage(newPagination.pageIndex + 1);
-  //     await setPageSize(newPagination.pageSize);
-  //   },
-  //   [page, pageSize, setPage, setPageSize]
-  // );
 
   // Action handlers
   const handleSubscribeBack = React.useCallback(
@@ -540,7 +523,6 @@ export function UnsubscribedTable() {
     data: data?.data || [],
     columns,
     pageCount: totalPages,
-    // onPaginationChange: handlePaginationChange,
     onSortingChange: handleSortingChange,
     initialState: {
       pagination: {
